@@ -1,0 +1,13 @@
+{
+    "variants":
+    {
+        "facing=north,wall=false": {"model": "moarwoods:crafting_grid_facade"},
+        "facing=south,wall=false": {"model": "moarwoods:crafting_grid_facade", "y": 180},
+        "facing=west,wall=false": {"model": "moarwoods:crafting_grid_facade", "y": 270},
+        "facing=east,wall=false": {"model": "moarwoods:crafting_grid_facade", "y": 90},
+        "facing=north,wall=true": {"model": "moarwoods:crafting_grid_facade", "x": 90},
+        "facing=south,wall=true": {"model": "moarwoods:crafting_grid_facade", "x": 90, "y": 180},
+        "facing=west,wall=true": {"model": "moarwoods:crafting_grid_facade", "x": 90, "y": 270},
+        "facing=east,wall=true": {"model": "moarwoods:crafting_grid_facade", "x": 90, "y": 90}
+    }
+}
