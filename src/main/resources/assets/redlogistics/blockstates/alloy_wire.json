@@ -1,0 +1,35 @@
+{
+    "_comment": "THIS IS NOT A NORMAL BLOCKSTATE FILE, THIS IS A FORGE BLOCKSTATE JSON. More Info <<< http://mcforge.readthedocs.io/en/latest/blockstates/forgeBlockstates/ >>> More Info",
+    "forge_marker": 1,
+    "defaults":
+    {
+        "model": "redlogistics:wire",
+        "textures":
+        {
+            "wire": "metalextras:blocks/bronze_block"
+        },
+        "uvlock": true
+    },
+    
+    "variants":
+    {
+        "direction": 
+        { 
+            "down": { },
+            "up": { "x": 180 },
+            "north": { "x": 270 },
+            "south": { "x": 90 },
+            "west": { "x": 90, "y": 90 },
+            "east": { "x": 90, "y": 270 }
+        },
+        
+        "powered":
+        {
+            "true": { },
+            "false": { }
+        },
+        "inventory": [ { } ]
+    }
+}
+                
+    

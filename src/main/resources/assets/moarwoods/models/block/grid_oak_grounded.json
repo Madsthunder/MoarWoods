@@ -1,8 +1,0 @@
-{
-    "parent": "moarwoods:block/crafting_grid_grounded",
-    "textures":
-    {
-        "base": "minecraft:blocks/planks_oak",
-        "frame": "minecraft:blocks/log_oak"
-    }
-}

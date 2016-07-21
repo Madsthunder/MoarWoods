@@ -1,0 +1,168 @@
+{
+    "elements":
+    [
+        {
+            "_comment": "North-West Pillar",
+            "from": [ 6, 6, 6 ],
+            "to": [ 6.75, 10, 6.75 ],
+            "faces":
+            {
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "north": { "texture": "#conduit" },
+                "south": { "texture": "#conduit" },
+                "west": { "texture": "#conduit" },
+                "east": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "North-East Pillar",
+            "from": [ 9.25, 6, 6 ],
+            "to": [ 10, 10, 6.75 ],
+            "faces":
+            {
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "north": { "texture": "#conduit" },
+                "south": { "texture": "#conduit" },
+                "west": { "texture": "#conduit" },
+                "east": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "South-West Pillar",
+            "from": [ 6, 6, 9.25 ],
+            "to": [ 6.75, 10, 10 ],
+            "faces":
+            {
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "north": { "texture": "#conduit" },
+                "south": { "texture": "#conduit" },
+                "west": { "texture": "#conduit" },
+                "east": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "South-East Pillar",
+            "from": [ 9.25, 6, 9.25 ],
+            "to": [ 10, 10, 10 ],
+            "faces":
+            {
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "north": { "texture": "#conduit" },
+                "south": { "texture": "#conduit" },
+                "west": { "texture": "#conduit" },
+                "east": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "Bottom-North Bar",
+            "from": [ 6.75, 6, 6 ],
+            "to": [ 9.25, 6.75, 6.75 ],
+            "faces":
+            {
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "north": { "texture": "#conduit" },
+                "south": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "Top-North Bar",
+            "from": [ 6.75, 9.25, 6 ],
+            "to": [ 9.25, 10, 6.75 ],
+            "faces":
+            {
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "north": { "texture": "#conduit" },
+                "south": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "Bottom-South Bar",
+            "from": [ 6.75, 6, 9.25 ],
+            "to": [ 9.25, 6.75, 10 ],
+            "faces":
+            {
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "north": { "texture": "#conduit" },
+                "south": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "Top-South Bar",
+            "from": [ 6.75, 9.25, 9.25 ],
+            "to": [ 9.25, 10, 10 ],
+            "faces":
+            {
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "north": { "texture": "#conduit" },
+                "south": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "Bottom-West Bar",
+            "from": [ 6, 6, 6.75 ],
+            "to": [ 6.75, 6.75, 9.25 ],
+            "faces":
+            { 
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "west": { "texture": "#conduit" },
+                "east": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "Top-West Bar",
+            "from": [ 6, 9.25, 6.75 ],
+            "to": [ 6.75, 10, 9.25 ],
+            "faces":
+            { 
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "west": { "texture": "#conduit" },
+                "east": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "Bottom-East Bar",
+            "from": [ 9.25, 6, 6.75 ],
+            "to": [ 10, 6.75, 9.25 ],
+            "faces":
+            { 
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "west": { "texture": "#conduit" },
+                "east": { "texture": "#conduit" }
+            }
+        },
+        
+        {
+            "_comment": "Top-East Bar",
+            "from": [ 9.25, 9.25, 6.75 ],
+            "to": [ 10, 10, 9.25 ],
+            "faces":
+            { 
+                "down": { "texture": "#conduit" },
+                "up": { "texture": "#conduit" },
+                "west": { "texture": "#conduit" },
+                "east": { "texture": "#conduit" }
+            }
+        }
+    ]
+}

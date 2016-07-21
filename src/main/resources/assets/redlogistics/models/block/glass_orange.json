@@ -1,0 +1,7 @@
+{
+    "parent": "redlogistics:block/glass",
+    "textures":
+    {
+        "glass": "minecraft:blocks/glass_orange"
+    }
+}

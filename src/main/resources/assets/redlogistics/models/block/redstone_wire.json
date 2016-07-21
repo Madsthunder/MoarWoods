@@ -1,0 +1,7 @@
+{
+    "parent": "redlogistics:block/wire"
+    "textures":
+    {
+        "wire": "minecraft:blocks/redstone_block"
+    }
+}

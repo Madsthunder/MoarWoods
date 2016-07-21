@@ -1,0 +1,8 @@
+{
+    "parent": "redlogistics:item/conduit",
+    "textures":
+    {
+        "base": "metalextras:blocks/bronze_block"
+    }
+}
+    

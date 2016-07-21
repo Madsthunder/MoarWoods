@@ -1,0 +1,17 @@
+{
+    "elements":
+    [
+        {
+            "from": [ 0, 0, 5.25 ],
+            "to": [ 5.25, 2.0, 10.75 ],
+            "faces":
+            {
+                "up": { "texture": "#wire" },
+                "north": { "texture": "#wire" },
+                "south": { "texture": "#wire" },
+                "west": { "texture": "#wire" },
+                "east": { "texture": "#wire" }
+            }
+        }
+    ]
+}
