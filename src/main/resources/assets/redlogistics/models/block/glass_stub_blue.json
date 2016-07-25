@@ -1,7 +1,0 @@
-{
-    "parent": "redlogistics:block/glass_stub",
-    "textures":
-    {
-        "glass": "minecraft:blocks/glass_blue"
-    }
-}
