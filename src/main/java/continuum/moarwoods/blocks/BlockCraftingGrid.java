@@ -142,7 +142,9 @@ public class BlockCraftingGrid extends Block implements IBlockBoundable
 						grid.setInventorySlotContents((Integer)hitInfo, stack1);
 					}
 					else
-						player.openGui(this.mod, 0, world, pos.getX(), pos.getY(), pos.getZ());
+					{
+						player.openGui("MoarWoods", 0, world, pos.getX(), pos.getY(), pos.getZ());
+					}
 				else if(hitInfo instanceof Integer)
 				{
 					grid.setInventorySlotContents((Integer)hitInfo, stack1);
@@ -181,7 +183,7 @@ public class BlockCraftingGrid extends Block implements IBlockBoundable
 				world.setTileEntity(pos, grid2);
 			}
 			else
-				player.openGui(this.mod, 0, world, pos.getX(), pos.getY(), pos.getZ());
+				player.openGui("MoarWoods", 0, world, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}
