@@ -1,0 +1,26 @@
+{
+    "forge_marker": 1,
+    "transforms": "forge:default_block",
+    "variants":
+    {
+        "growth":
+        {
+            0 : { },
+            1 : { "model": "moarwoods:apple_green" },
+            2 : { "model": "moarwoods:apple_yellow" },
+            3 : { "model": "moarwoods:apple_red" }
+        },
+        
+        "fancy":
+        {
+            "true": { "submodel": "minecraft:oak_leaves" },
+            "false": { "model": "minecraft:oak_leaves" }
+        },
+        
+        "inventory_green": [ { "model": "moarwoods:apple_green", submodel": "minecraft:oak_leaves" } ],
+        "inventory_yellow": [ { "model": "moarwoods:apple_yellow", submodel": "minecraft:oak_leaves" } ],
+        "inventory_red": [ { "model": "moarwoods:apple_red", submodel": "minecraft:oak_leaves" } ]
+    }
+}
+                
+    
