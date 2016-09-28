@@ -30,25 +30,25 @@ public class MoarWoods_EH implements IGuiHandler
 	@SubscribeEvent
 	public static void onBlocksRegister(RegistryEvent.Register<Block> event)
 	{
-		event.getRegistry().register(MoarWoods_OH.craftingGridOak);
-		event.getRegistry().register(MoarWoods_OH.craftingGridSpruce);
-		event.getRegistry().register(MoarWoods_OH.craftingGridBirch);
-		event.getRegistry().register(MoarWoods_OH.craftingGridJungle);
-		event.getRegistry().register(MoarWoods_OH.craftingGridAcacia);
-		event.getRegistry().register(MoarWoods_OH.craftingGridDarkOak);
+		event.getRegistry().register(MoarWoods_OH.oak_crafting_grid);
+		event.getRegistry().register(MoarWoods_OH.spruce_crafting_grid);
+		event.getRegistry().register(MoarWoods_OH.birch_crafting_grid);
+		event.getRegistry().register(MoarWoods_OH.jungle_crafting_grid);
+		event.getRegistry().register(MoarWoods_OH.acacia_crafting_grid);
+		event.getRegistry().register(MoarWoods_OH.darkoak_crafting_grid);
 		GameRegistry.registerTileEntity(TileEntityCraftingGrid.class, "moarwoods:crafting_grid");
 	}
 	
 	@SubscribeEvent
 	public static void onItemsRegister(RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.craftingGridOak));
-		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.craftingGridSpruce));
-		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.craftingGridBirch));
-		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.craftingGridJungle));
-		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.craftingGridAcacia));
-		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.craftingGridDarkOak));
-		event.getRegistry().register(ItemHooks.createItemBlockMeta(MoarWoods_OH.appleLeaves, 3));
+		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.oak_crafting_grid));
+		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.spruce_crafting_grid));
+		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.birch_crafting_grid));
+		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.jungle_crafting_grid));
+		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.acacia_crafting_grid));
+		event.getRegistry().register(ItemHooks.createItemBlock(MoarWoods_OH.darkoak_crafting_grid));
+		event.getRegistry().register(ItemHooks.createItemBlockMeta(MoarWoods_OH.apple_leaves, 3));
 	}
 	
 	@Override
