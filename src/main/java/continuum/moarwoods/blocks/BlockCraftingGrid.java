@@ -43,16 +43,12 @@ public class BlockCraftingGrid extends Block implements IBlockBoundable
 {
 	public static final PropertyBool walled = PropertyBool.create("walled");
 	public static final PropertyDirection direction = PropertyDirection.create("direction", EnumFacing.Plane.HORIZONTAL);
-	private final CTMod<MoarWoods_OH, MoarWoods_EH> mod;
 	private AxisAlignedBB bounds = Block.FULL_BLOCK_AABB;
 	
-	public BlockCraftingGrid(CTMod<MoarWoods_OH, MoarWoods_EH> mod, Material material, SoundType sound, String name)
+	public BlockCraftingGrid(Material material, SoundType sound)
 	{
 		super(material);
-		this.mod = mod;
 		this.setSoundType(sound);
-		this.setUnlocalizedName(name + "_grid");
-		this.setRegistryName(name + "_grid");
 		this.setDefaultState(this.getDefaultState().withProperty(walled, false).withProperty(direction, EnumFacing.NORTH));
 	}
 	
@@ -151,7 +147,7 @@ public class BlockCraftingGrid extends Block implements IBlockBoundable
 					world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ITEMFRAME_ADD_ITEM, SoundCategory.PLAYERS, 1F, 1F);
 				}
 				else
-					player.openGui(this.mod, 0, world, pos.getX(), pos.getY(), pos.getZ());
+					player.openGui(MoarWoods_OH.I.getMoarWoods(), 0, world, pos.getX(), pos.getY(), pos.getZ());
 				world.notifyBlockUpdate(pos, state, state, 2);
 			}
 			else if(hitInfo instanceof String)
@@ -168,7 +164,7 @@ public class BlockCraftingGrid extends Block implements IBlockBoundable
 					world.notifyBlockUpdate(pos, state, state, 2);
 				}
 				else
-					player.openGui(this.mod, 0, world, pos.getX(), pos.getY(), pos.getZ());
+					player.openGui(MoarWoods_OH.I.getMoarWoods(), 0, world, pos.getX(), pos.getY(), pos.getZ());
 			}
 			else if(hitInfo instanceof EnumFacing && facing != hitInfo)
 			{

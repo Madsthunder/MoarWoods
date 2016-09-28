@@ -1,6 +1,6 @@
 package continuum.moarwoods.loaders;
 
-import continuum.essentials.helpers.CraftingHelper;
+import continuum.essentials.hooks.CraftingHooks;
 import continuum.essentials.mod.CTMod;
 import continuum.essentials.mod.ObjectLoader;
 import continuum.moarwoods.mod.MoarWoods_EH;
@@ -27,7 +27,7 @@ public class RecipeLoader implements ObjectLoader<MoarWoods_OH, MoarWoods_EH>
 	@Override
 	public void post(CTMod<MoarWoods_OH, MoarWoods_EH> mod)
 	{
-		CraftingHelper.removeAllRecipesForItem(new ItemStack(Items.STICK, 4));
+		CraftingHooks.removeAllRecipesForItem(new ItemStack(Items.STICK, 4));
 	}
 	
 	@Override

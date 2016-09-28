@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -56,12 +57,18 @@ public class CraftingGridTESR extends TileEntitySpecialRenderer<TileEntityCrafti
 				}
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(.5, .5, .5);
-			GlStateManager.scale(.5, .5, .5);
-	        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-	        GlStateManager.rotate((float)(Minecraft.getMinecraft().getRenderManager().options.thirdPersonView == 2 ? -1 : 1) * Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+			GlStateManager.scale(.5, .5, .5);;
 	        GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
 			if(grid.hasResult())
-				this.renderItem.renderItem(stack = grid.getResult(), this.renderItem.getItemModelMesher().getItemModel(stack));
+			{
+				IBakedModel model = this.renderItem.getItemModelMesher().getItemModel(stack = grid.getResult());
+				if(!model.isGui3d())
+				{
+			        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+			        GlStateManager.rotate((float)(Minecraft.getMinecraft().getRenderManager().options.thirdPersonView == 2 ? -1 : 1) * Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+				}
+				this.renderItem.renderItem(stack, model);
+			}
 			GlStateManager.popMatrix();
 			GlStateManager.popMatrix();
 		}

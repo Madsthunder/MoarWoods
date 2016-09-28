@@ -12,7 +12,6 @@ public class StateMapperCraftingGrid extends StateMapperBase
 	@Override
 	protected ModelResourceLocation getModelResourceLocation(IBlockState state)
 	{
-		String unlocalizedName = state.getBlock().getUnlocalizedName();
-		return new ModelResourceLocation("moarwoods:" + unlocalizedName.substring(5, unlocalizedName.length() - 5) + "_crafting_grid", (state.getValue(BlockCraftingGrid.walled) ? "walled_" : "grounded_") + state.getValue(BlockCraftingGrid.direction));
+		return new ModelResourceLocation(state.getBlock().getRegistryName(), (state.getValue(BlockCraftingGrid.walled) ? "walled_" : "grounded_") + state.getValue(BlockCraftingGrid.direction));
 	}
 }

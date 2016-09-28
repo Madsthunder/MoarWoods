@@ -1,5 +1,6 @@
 package continuum.moarwoods.mod;
 
+import java.io.File;
 import java.util.Map;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -8,7 +9,6 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 @IFMLLoadingPlugin.MCVersion("1.10.2")
 public class MoarWoods_Plugins implements IFMLLoadingPlugin
 {
-
 	@Override
 	public String[] getASMTransformerClass()
 	{
@@ -18,7 +18,7 @@ public class MoarWoods_Plugins implements IFMLLoadingPlugin
 	@Override
 	public String getModContainerClass()
 	{
-		return "continuum.moarwoods.mod.MoarWoods_Mod";
+		return null;
 	}
 
 	@Override

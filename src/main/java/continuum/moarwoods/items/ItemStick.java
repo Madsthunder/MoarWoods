@@ -4,6 +4,7 @@ import java.util.List;
 
 import continuum.essentials.mod.CTMod;
 import continuum.moarwoods.mod.MoarWoods_EH;
+import continuum.moarwoods.mod.MoarWoods_Mod;
 import continuum.moarwoods.mod.MoarWoods_OH;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

@@ -6,7 +6,7 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 
-import continuum.essentials.tileentity.CTTileEntityContainer;
+import continuum.essentials.tileentity.TileEntityInventory;
 import continuum.moarwoods.inventories.InventoryCraftingGrid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.ItemStackHelper;
@@ -17,10 +17,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityCraftingGrid extends CTTileEntityContainer
+public class TileEntityCraftingGrid extends TileEntityInventory
 {
-	private final Integer width;
-	private final Integer height;
+	private final int width;
+	private final int height;
 	private List<Float> gridYaws;
 	private final InventoryCraftingGrid matrix;
 	
@@ -29,12 +29,12 @@ public class TileEntityCraftingGrid extends CTTileEntityContainer
 		this(false);
 	}
 	
-	public TileEntityCraftingGrid(Boolean isRemote)
+	public TileEntityCraftingGrid(boolean isRemote)
 	{
 		this(isRemote, 3, 3);
 	}
 	
-	public TileEntityCraftingGrid(Boolean isRemote, Integer width, Integer height)
+	public TileEntityCraftingGrid(boolean isRemote, int width, int height)
 	{
 		super(width * height);
 		this.width = width;

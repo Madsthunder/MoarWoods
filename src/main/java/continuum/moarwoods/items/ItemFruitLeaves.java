@@ -22,11 +22,4 @@ public class ItemFruitLeaves extends ItemBlock
 	{
 		return metadata;
 	}
-	
-	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List list)
-	{
-		list.add(new ItemStack(item));
-		list.add(new ItemStack(item, 1, 1));
-	}
 }

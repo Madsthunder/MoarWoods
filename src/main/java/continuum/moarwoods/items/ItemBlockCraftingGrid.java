@@ -10,7 +10,6 @@ public class ItemBlockCraftingGrid extends ItemBlock
 	{
 		super(grid);
 		this.setRegistryName(grid.getRegistryName());
-		this.setUnlocalizedName(grid.getUnlocalizedName());
 	}
 	
 }
