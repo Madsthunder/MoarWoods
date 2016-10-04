@@ -1,15 +1,19 @@
 package continuum.moarwoods.mod;
 
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import continuum.essentials.hooks.ItemHooks;
 import continuum.essentials.mod.ObjectHolder;
 import continuum.essentials.util.CreativeTab;
 import continuum.moarwoods.blocks.BlockAppleLeaves;
 import continuum.moarwoods.blocks.BlockCraftingGrid;
 import continuum.moarwoods.client.state.StateMapperCraftingGrid;
 import continuum.moarwoods.client.state.StateMapperFruitLeaves;
-import continuum.moarwoods.items.ItemStick;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFood;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
@@ -61,57 +65,51 @@ public class MoarWoods_OH implements ObjectHolder
 		return mod.version();
 	}
 	
-	public static final BlockCraftingGrid oak_crafting_grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
-	public static final BlockCraftingGrid spruce_crafting_grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
-	public static final BlockCraftingGrid birch_crafting_grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
-	public static final BlockCraftingGrid jungle_crafting_grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
-	public static final BlockCraftingGrid acacia_crafting_grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
-	public static final BlockCraftingGrid darkoak_crafting_grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
+	public static final Pair<BlockCraftingGrid, ItemBlock> oak_crafting_grid;
+	public static final Pair<BlockCraftingGrid, ItemBlock> spruce_crafting_grid;
+	public static final Pair<BlockCraftingGrid, ItemBlock> birch_crafting_grid;
+	public static final Pair<BlockCraftingGrid, ItemBlock> jungle_crafting_grid;
+	public static final Pair<BlockCraftingGrid, ItemBlock> acacia_crafting_grid;
+	public static final Pair<BlockCraftingGrid, ItemBlock> darkoak_crafting_grid;
 	
-	public static final BlockAppleLeaves apple_leaves = new BlockAppleLeaves();
+	public static final Pair<BlockAppleLeaves, ItemBlock> apple_leaves;
 	
 	//public ItemStick stick;
-	public static final ItemFood yellow_apple = new ItemFood(2, .5F, false);
-	public static final ItemFood green_apple = new ItemFood(1, 1F, false);
+	public static final ItemFood yellow_apple;
+	public static final ItemFood green_apple;
 	
 	@SideOnly(Side.CLIENT)
 	public StateMapperCraftingGrid stateMapperCraftingGrid;
 	@SideOnly(Side.CLIENT)
 	public StateMapperFruitLeaves stateMapperFruitLeaves;
 	
-	public static final CreativeTabs crafting_grids = new CreativeTab("crafting_grids", oak_crafting_grid);
-	public static final CreativeTabs flora = new CreativeTab("flora", apple_leaves);
+	public static final CreativeTabs crafting_grids;
+	public static final CreativeTabs flora;
 	
 	static
 	{
-		oak_crafting_grid.setRegistryName(new ResourceLocation(mod.modid(), "oak_crafting_grid"));
-		oak_crafting_grid.setUnlocalizedName("oak_crafting_grid");
-		oak_crafting_grid.setHardness(2F);
-		oak_crafting_grid.setCreativeTab(crafting_grids);
-		spruce_crafting_grid.setRegistryName(new ResourceLocation(mod.modid(), "spruce_crafting_grid"));
-		spruce_crafting_grid.setUnlocalizedName("spruce_crafting_grid");
-		spruce_crafting_grid.setHardness(2F);
-		spruce_crafting_grid.setCreativeTab(crafting_grids);
-		birch_crafting_grid.setRegistryName(new ResourceLocation(mod.modid(), "birch_crafting_grid"));
-		birch_crafting_grid.setUnlocalizedName("birch_crafting_grid");
-		birch_crafting_grid.setHardness(2F);
-		birch_crafting_grid.setCreativeTab(crafting_grids);
-		jungle_crafting_grid.setRegistryName(new ResourceLocation(mod.modid(), "jungle_crafting_grid"));
-		jungle_crafting_grid.setUnlocalizedName("jungle_crafting_grid");
-		jungle_crafting_grid.setHardness(2F);
-		jungle_crafting_grid.setCreativeTab(crafting_grids);
-		acacia_crafting_grid.setRegistryName(new ResourceLocation(mod.modid(), "acacia_crafting_grid"));
-		acacia_crafting_grid.setUnlocalizedName("acacia_crafting_grid");
-		acacia_crafting_grid.setHardness(2F);
-		acacia_crafting_grid.setCreativeTab(crafting_grids);
-		darkoak_crafting_grid.setRegistryName(new ResourceLocation(mod.modid(), "darkoak_crafting_grid"));
-		darkoak_crafting_grid.setUnlocalizedName("darkoak_crafting_grid");
-		darkoak_crafting_grid.setHardness(2F);
-		darkoak_crafting_grid.setCreativeTab(crafting_grids);
-		apple_leaves.setRegistryName(new ResourceLocation(mod.modid(), "apple_leaves"));
-		apple_leaves.setUnlocalizedName("apple_leaves");
-		apple_leaves.setCreativeTab(flora);
-		yellow_apple.setRegistryName(new ResourceLocation(mod.modid(), "yellow_apple"));
-		green_apple.setRegistryName(new ResourceLocation(mod.modid(), "green_apple"));
+		BlockCraftingGrid grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
+		crafting_grids = new CreativeTab(mod.modid() + ":crafting_grids", grid);
+		grid.setRegistryName(new ResourceLocation(mod.modid(), "oak_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
+		oak_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
+		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "spruce_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
+		spruce_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
+		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "birch_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
+		birch_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
+		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "jungle_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
+		jungle_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
+		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "acacia_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
+		acacia_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
+		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "darkoak_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
+		darkoak_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
+		BlockAppleLeaves appleleaves = new BlockAppleLeaves();
+		flora = new CreativeTab(mod.modid() + ":flora", appleleaves);
+		appleleaves.setRegistryName(new ResourceLocation(mod.modid(), "apple_leaves")).setUnlocalizedName(appleleaves.getRegistryName().toString()).setCreativeTab(flora);
+		apple_leaves = Pair.of(appleleaves, ItemHooks.createItemBlockMeta(appleleaves, 3));
+		ItemFood apple;
+		(apple = new ItemFood(2, .5F, false)).setRegistryName(new ResourceLocation(mod.modid(), "yellow_apple")).setUnlocalizedName(apple.getRegistryName().toString()).setCreativeTab(CreativeTabs.FOOD);
+		yellow_apple = apple;
+		(apple = new ItemFood(1, 1F, false)).setRegistryName(new ResourceLocation(mod.modid(), "green_apple")).setUnlocalizedName(apple.getRegistryName().toString()).setCreativeTab(CreativeTabs.FOOD);
+		green_apple = apple;
 	}
 }
