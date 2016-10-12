@@ -10,12 +10,15 @@ import continuum.moarwoods.blocks.BlockAppleLeaves;
 import continuum.moarwoods.blocks.BlockCraftingGrid;
 import continuum.moarwoods.client.state.StateMapperCraftingGrid;
 import continuum.moarwoods.client.state.StateMapperFruitLeaves;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFood;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -65,51 +68,42 @@ public class MoarWoods_OH implements ObjectHolder
 		return mod.version();
 	}
 	
-	public static final Pair<BlockCraftingGrid, ItemBlock> oak_crafting_grid;
-	public static final Pair<BlockCraftingGrid, ItemBlock> spruce_crafting_grid;
-	public static final Pair<BlockCraftingGrid, ItemBlock> birch_crafting_grid;
-	public static final Pair<BlockCraftingGrid, ItemBlock> jungle_crafting_grid;
-	public static final Pair<BlockCraftingGrid, ItemBlock> acacia_crafting_grid;
-	public static final Pair<BlockCraftingGrid, ItemBlock> darkoak_crafting_grid;
+	public static final Pair<BlockCraftingGrid, ItemBlock> OAK_CRAFTING_GRID;
+	public static final Pair<BlockCraftingGrid, ItemBlock> SPRUCE_CRAFTING_GRID;
+	public static final Pair<BlockCraftingGrid, ItemBlock> BIRCH_CRAFTING_GRID;
+	public static final Pair<BlockCraftingGrid, ItemBlock> JUNGLE_CRAFTING_GRID;
+	public static final Pair<BlockCraftingGrid, ItemBlock> ACACIA_CRAFTING_GRID;
+	public static final Pair<BlockCraftingGrid, ItemBlock> DARKOAK_CRAFTING_GRID;
 	
-	public static final Pair<BlockAppleLeaves, ItemBlock> apple_leaves;
+	public static final Pair<BlockAppleLeaves, ItemBlock> APPLE_LEAVES;
 	
 	//public ItemStick stick;
-	public static final ItemFood yellow_apple;
-	public static final ItemFood green_apple;
+	public static final ItemFood YELLOW_APPLE;
+	public static final ItemFood GREEN_APPLE;
 	
 	@SideOnly(Side.CLIENT)
 	public StateMapperCraftingGrid stateMapperCraftingGrid;
 	@SideOnly(Side.CLIENT)
 	public StateMapperFruitLeaves stateMapperFruitLeaves;
 	
-	public static final CreativeTabs crafting_grids;
-	public static final CreativeTabs flora;
+	public static final CreativeTabs CRAFTING_GRIDS;
+	public static final CreativeTabs FLORA;
 	
 	static
 	{
+		if(!Loader.instance().activeModContainer().getModId().equals(mod.modid()))
+			throw new IllegalStateException("MoarWoods not loaded yet!");
 		BlockCraftingGrid grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
-		crafting_grids = new CreativeTab(mod.modid() + ":crafting_grids", grid);
-		grid.setRegistryName(new ResourceLocation(mod.modid(), "oak_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
-		oak_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
-		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "spruce_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
-		spruce_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
-		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "birch_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
-		birch_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
-		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "jungle_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
-		jungle_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
-		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "acacia_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
-		acacia_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
-		(grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD)).setRegistryName(new ResourceLocation(mod.modid(), "darkoak_crafting_grid")).setUnlocalizedName(grid.getRegistryName().toString()).setHardness(2F).setCreativeTab(crafting_grids);
-		darkoak_crafting_grid = Pair.of(grid, ItemHooks.createItemBlock(grid));
+		CRAFTING_GRIDS = new CreativeTab(mod.modid() + ":crafting_grids", grid);
+		(OAK_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(SPRUCE_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(BIRCH_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(JUNGLE_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(ACACIA_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(DARKOAK_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
 		BlockAppleLeaves appleleaves = new BlockAppleLeaves();
-		flora = new CreativeTab(mod.modid() + ":flora", appleleaves);
-		appleleaves.setRegistryName(new ResourceLocation(mod.modid(), "apple_leaves")).setUnlocalizedName(appleleaves.getRegistryName().toString()).setCreativeTab(flora);
-		apple_leaves = Pair.of(appleleaves, ItemHooks.createItemBlockMeta(appleleaves, 3));
-		ItemFood apple;
-		(apple = new ItemFood(2, .5F, false)).setRegistryName(new ResourceLocation(mod.modid(), "yellow_apple")).setUnlocalizedName(apple.getRegistryName().toString()).setCreativeTab(CreativeTabs.FOOD);
-		yellow_apple = apple;
-		(apple = new ItemFood(1, 1F, false)).setRegistryName(new ResourceLocation(mod.modid(), "green_apple")).setUnlocalizedName(apple.getRegistryName().toString()).setCreativeTab(CreativeTabs.FOOD);
-		green_apple = apple;
+		APPLE_LEAVES = ObjectHolder.setupItemBlock(appleleaves, "apple_leaves", FLORA = new CreativeTab(mod.modid() + ":flora", appleleaves), 3);
+		YELLOW_APPLE = ObjectHolder.setupItem(new ItemFood(2, .5F, false), "yellow_apple", CreativeTabs.FOOD);
+		GREEN_APPLE = ObjectHolder.setupItem(new ItemFood(2, .5F, false), "green_apple", CreativeTabs.FOOD);
 	}
 }

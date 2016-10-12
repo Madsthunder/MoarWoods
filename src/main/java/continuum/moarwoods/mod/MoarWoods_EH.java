@@ -30,25 +30,25 @@ public class MoarWoods_EH implements IGuiHandler
 	@SubscribeEvent
 	public static void onBlocksRegister(RegistryEvent.Register<Block> event)
 	{
-		event.getRegistry().register(MoarWoods_OH.oak_crafting_grid.getLeft());
-		event.getRegistry().register(MoarWoods_OH.spruce_crafting_grid.getLeft());
-		event.getRegistry().register(MoarWoods_OH.birch_crafting_grid.getLeft());
-		event.getRegistry().register(MoarWoods_OH.jungle_crafting_grid.getLeft());
-		event.getRegistry().register(MoarWoods_OH.acacia_crafting_grid.getLeft());
-		event.getRegistry().register(MoarWoods_OH.darkoak_crafting_grid.getLeft());
+		event.getRegistry().register(MoarWoods_OH.OAK_CRAFTING_GRID.getLeft());
+		event.getRegistry().register(MoarWoods_OH.SPRUCE_CRAFTING_GRID.getLeft());
+		event.getRegistry().register(MoarWoods_OH.BIRCH_CRAFTING_GRID.getLeft());
+		event.getRegistry().register(MoarWoods_OH.JUNGLE_CRAFTING_GRID.getLeft());
+		event.getRegistry().register(MoarWoods_OH.ACACIA_CRAFTING_GRID.getLeft());
+		event.getRegistry().register(MoarWoods_OH.DARKOAK_CRAFTING_GRID.getLeft());
 		GameRegistry.registerTileEntity(TileEntityCraftingGrid.class, "moarwoods:crafting_grid");
 	}
 	
 	@SubscribeEvent
 	public static void onItemsRegister(RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().register(MoarWoods_OH.oak_crafting_grid.getRight());
-		event.getRegistry().register(MoarWoods_OH.spruce_crafting_grid.getRight());
-		event.getRegistry().register(MoarWoods_OH.birch_crafting_grid.getRight());
-		event.getRegistry().register(MoarWoods_OH.jungle_crafting_grid.getRight());
-		event.getRegistry().register(MoarWoods_OH.acacia_crafting_grid.getRight());
-		event.getRegistry().register(MoarWoods_OH.darkoak_crafting_grid.getRight());
-		event.getRegistry().register(MoarWoods_OH.apple_leaves.getRight());
+		event.getRegistry().register(MoarWoods_OH.OAK_CRAFTING_GRID.getRight());
+		event.getRegistry().register(MoarWoods_OH.SPRUCE_CRAFTING_GRID.getRight());
+		event.getRegistry().register(MoarWoods_OH.BIRCH_CRAFTING_GRID.getRight());
+		event.getRegistry().register(MoarWoods_OH.JUNGLE_CRAFTING_GRID.getRight());
+		event.getRegistry().register(MoarWoods_OH.ACACIA_CRAFTING_GRID.getRight());
+		event.getRegistry().register(MoarWoods_OH.DARKOAK_CRAFTING_GRID.getRight());
+		event.getRegistry().register(MoarWoods_OH.APPLE_LEAVES.getRight());
 	}
 	
 	@Override

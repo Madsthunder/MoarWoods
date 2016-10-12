@@ -1,15 +1,15 @@
-itemGroup.crafting_grids=MoarWoods: Crafting Grids
-itemGroup.flora=MoarWoods: Flora
+itemGroup.moarwoods:crafting_grids=MoarWoods: Crafting Grids
+itemGroup.moarwoods:flora=MoarWoods: Flora
 
 container.crafting_grid=Crafting Grid
 
-tile.oak_grid.name=Oak Crafting Grid
-tile.spruce_grid.name=Spruce Crafting Grid
-tile.birch_grid.name=Birch Crafting Grid
-tile.jungle_grid.name=Jungle Crafting Grid
-tile.acacia_grid.name=Acacia Crafting Grid
-tile.dark_oak_grid.name=Dark Oak Crafting Grid
-tile.apple_leave.name=Applee Leaves
+tile.moarwoods:oak_crafting_grid.name=Oak Crafting Grid
+tile.moarwoods:spruce_crafting_grid.name=Spruce Crafting Grid
+tile.moarwoods:birch_crafting_grid.name=Birch Crafting Grid
+tile.moarwoods:jungle_crafting_grid.name=Jungle Crafting Grid
+tile.moarwoods:acacia_crafting_grid.name=Acacia Crafting Grid
+tile.moarwoods:darkoak_crafting_grid.name=Dark Oak Crafting Grid
+tile.moarwoods:apple_leaves.name=Apple Leaves
 
 item.default_stick.name=Stick
 item.oak_stick.name=Oak Stick

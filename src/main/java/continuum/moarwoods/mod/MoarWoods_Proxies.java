@@ -36,10 +36,10 @@ public class MoarWoods_Proxies
 		public void pre(MoarWoods_Mod mod)
 		{
 			super.pre(mod);
-			ClientHooks.assignAllBlocksToStateMapper(new StateMapperCraftingGrid(), MoarWoods_OH.oak_crafting_grid.getLeft(), MoarWoods_OH.spruce_crafting_grid.getLeft(), MoarWoods_OH.birch_crafting_grid.getLeft(), MoarWoods_OH.jungle_crafting_grid.getLeft(), MoarWoods_OH.acacia_crafting_grid.getLeft(), MoarWoods_OH.darkoak_crafting_grid.getLeft());
-			ClientHooks.assignAllItemsToVariant("walled_south", MoarWoods_OH.oak_crafting_grid.getLeft(), MoarWoods_OH.spruce_crafting_grid.getLeft(), MoarWoods_OH.birch_crafting_grid.getLeft(), MoarWoods_OH.jungle_crafting_grid.getLeft(), MoarWoods_OH.acacia_crafting_grid.getLeft(), MoarWoods_OH.darkoak_crafting_grid.getLeft());
-			ModelLoader.setCustomStateMapper(MoarWoods_OH.apple_leaves.getLeft(), new StateMapperFruitLeaves());
-			ModelLoader.registerItemVariants(MoarWoods_OH.apple_leaves.getRight(), new ModelResourceLocation(new ResourceLocation("oak_leaves"), "inventory"), new ModelResourceLocation(MoarWoods_OH.apple_leaves.getLeft().getRegistryName(), "inventory_green"), new ModelResourceLocation(MoarWoods_OH.apple_leaves.getLeft().getRegistryName(), "inventory_yellow"), new ModelResourceLocation(MoarWoods_OH.apple_leaves.getLeft().getRegistryName(), "inventory_red"));
+			ClientHooks.assignAllBlocksToStateMapper(new StateMapperCraftingGrid(), MoarWoods_OH.OAK_CRAFTING_GRID.getLeft(), MoarWoods_OH.SPRUCE_CRAFTING_GRID.getLeft(), MoarWoods_OH.BIRCH_CRAFTING_GRID.getLeft(), MoarWoods_OH.JUNGLE_CRAFTING_GRID.getLeft(), MoarWoods_OH.ACACIA_CRAFTING_GRID.getLeft(), MoarWoods_OH.DARKOAK_CRAFTING_GRID.getLeft());
+			ClientHooks.assignAllItemsToVariant("walled_south", MoarWoods_OH.OAK_CRAFTING_GRID.getLeft(), MoarWoods_OH.SPRUCE_CRAFTING_GRID.getLeft(), MoarWoods_OH.BIRCH_CRAFTING_GRID.getLeft(), MoarWoods_OH.JUNGLE_CRAFTING_GRID.getLeft(), MoarWoods_OH.ACACIA_CRAFTING_GRID.getLeft(), MoarWoods_OH.DARKOAK_CRAFTING_GRID.getLeft());
+			ModelLoader.setCustomStateMapper(MoarWoods_OH.APPLE_LEAVES.getLeft(), new StateMapperFruitLeaves());
+			ModelLoader.registerItemVariants(MoarWoods_OH.APPLE_LEAVES.getRight(), new ModelResourceLocation(new ResourceLocation("oak_leaves"), "inventory"), new ModelResourceLocation(MoarWoods_OH.APPLE_LEAVES.getLeft().getRegistryName(), "inventory_green"), new ModelResourceLocation(MoarWoods_OH.APPLE_LEAVES.getLeft().getRegistryName(), "inventory_yellow"), new ModelResourceLocation(MoarWoods_OH.APPLE_LEAVES.getLeft().getRegistryName(), "inventory_red"));
 		}
 		
 		@Override
@@ -47,8 +47,8 @@ public class MoarWoods_Proxies
 		{
 			super.init(mod);
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCraftingGrid.class, new CraftingGridTESR());
-			ClientHooks.registerColorMultiplier(LeavesColorMultiplier.I, MoarWoods_OH.apple_leaves.getLeft());
-			ClientHooks.registerColorMultiplier(LeavesColorMultiplier.I, MoarWoods_OH.apple_leaves.getRight());
+			ClientHooks.registerColorMultiplier(LeavesColorMultiplier.I, MoarWoods_OH.APPLE_LEAVES.getLeft());
+			ClientHooks.registerColorMultiplier(LeavesColorMultiplier.I, MoarWoods_OH.APPLE_LEAVES.getRight());
 		}
 	}
 }
