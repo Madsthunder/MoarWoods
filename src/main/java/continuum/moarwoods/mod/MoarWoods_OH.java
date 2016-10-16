@@ -81,11 +81,6 @@ public class MoarWoods_OH implements ObjectHolder
 	public static final ItemFood YELLOW_APPLE;
 	public static final ItemFood GREEN_APPLE;
 	
-	@SideOnly(Side.CLIENT)
-	public StateMapperCraftingGrid stateMapperCraftingGrid;
-	@SideOnly(Side.CLIENT)
-	public StateMapperFruitLeaves stateMapperFruitLeaves;
-	
 	public static final CreativeTabs CRAFTING_GRIDS;
 	public static final CreativeTabs FLORA;
 	
@@ -96,11 +91,11 @@ public class MoarWoods_OH implements ObjectHolder
 		BlockCraftingGrid grid = new BlockCraftingGrid(Material.WOOD, SoundType.WOOD);
 		CRAFTING_GRIDS = new CreativeTab(mod.modid() + ":crafting_grids", grid);
 		(OAK_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
-		(SPRUCE_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
-		(BIRCH_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
-		(JUNGLE_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
-		(ACACIA_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
-		(DARKOAK_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "oak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(SPRUCE_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "spruce_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(BIRCH_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "birch_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(JUNGLE_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "jungle_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(ACACIA_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "acacia_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
+		(DARKOAK_CRAFTING_GRID = ObjectHolder.setupItemBlock(grid, "darkoak_crafting_grid", CRAFTING_GRIDS)).getLeft().setHardness(2F);
 		BlockAppleLeaves appleleaves = new BlockAppleLeaves();
 		APPLE_LEAVES = ObjectHolder.setupItemBlock(appleleaves, "apple_leaves", FLORA = new CreativeTab(mod.modid() + ":flora", appleleaves), 3);
 		YELLOW_APPLE = ObjectHolder.setupItem(new ItemFood(2, .5F, false), "yellow_apple", CreativeTabs.FOOD);
