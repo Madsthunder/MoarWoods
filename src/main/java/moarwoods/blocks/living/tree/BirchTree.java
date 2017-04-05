@@ -1,5 +1,7 @@
 package moarwoods.blocks.living.tree;
 
+import java.util.Random;
+
 import moarwoods.MoarWoods;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
@@ -24,16 +26,11 @@ public class BirchTree extends SmallOakTree
 	}
 	
 	@Override
-	public int getMinHeightLimit()
-	{
-		return 5;
-	}
-	
-	@Override
-	public int getDynamicHeightLimitFactor(World world, BlockPos pos)
+	public int getHeightLimit(World world, BlockPos pos, long[] seeds)
 	{
 		Biome biome = world.getBiome(pos);
-		return biome == Biomes.MUTATED_BIRCH_FOREST || biome == Biomes.MUTATED_BIRCH_FOREST_HILLS ? 7 : 0;
+		Random random = new Random(seeds[0]);
+		return 5 + random.nextInt(3) + random.nextInt(biome == Biomes.MUTATED_BIRCH_FOREST || biome == Biomes.MUTATED_BIRCH_FOREST_HILLS ? 7 : 1);
 	}
 	
 }

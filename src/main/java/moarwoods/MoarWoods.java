@@ -475,20 +475,22 @@ public class MoarWoods
 				{
 					IPlant plant = block.getPlant();
 					int height = AbstractPlant.getHieght(world, pos, block);
+					long[] seeds = new long[3];
+					{
+						Random r = new Random(seed);
+						for(int i = 0; i < seeds.length; i++)
+							seeds[i] = r.nextLong();
+					}
 					int total_energy;
 					TObjectIntHashMap<BlockPos.MutableBlockPos> energy_sources;
 					{
-						Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> pair = AbstractPlant.getTotalEnergy(world, pos, plant.getLeafSearchRadius(height), height + plant.getLeafSearchExtraHeight(height), plant.getLeafBlock());
+						Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> pair = AbstractPlant.getTotalEnergy(world, pos, plant.getLeafSearchRadius(world, pos, height, seeds), height + plant.getLeafSearchExtraHeight(world, pos, height, seeds), plant.getLeafBlock());
 						total_energy = pair.getLeft();
 						energy_sources = pair.getRight();
 					}
 					if(total_energy >= 1)
 					{
-						Random r = new Random(seed);
-						for(int i = 0; i < 2; i++)
-							r.nextLong();
-						long leaves_seed = r.nextLong();
-						List<BlockPos> leaves = plant.getLeaves(pos, height, leaves_seed);
+						List<BlockPos> leaves = plant.getLeaves(world, pos, height, seeds);
 						if(!leaves.isEmpty())
 						{
 							BlockPos pos1 = leaves.get(world.rand.nextInt(leaves.size()));

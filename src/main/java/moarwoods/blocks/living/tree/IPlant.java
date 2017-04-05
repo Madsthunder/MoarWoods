@@ -15,13 +15,13 @@ public interface IPlant
 	
 	public BlockLivingLeaf getLeafBlock();
 	
-	public int getLeafSearchRadius(int height);
+	public int getLeafSearchRadius(World world, BlockPos pos, int height, long[] seeds);
 	
-	public int getLeafSearchExtraHeight(int height);
+	public int getLeafSearchExtraHeight(World world, BlockPos pos, int height, long[] seeds);
 	
-	public List<BlockPos> getLeaves(BlockPos pos, int height, long seed);
+	public List<BlockPos> getLeaves(World world, BlockPos pos, int height, long[] seeds);
 	
-	public List<IPlantBranch> getBranches(World world, BlockPos pos, int height, long seed);
+	public List<IPlantBranch> getBranches(World world, BlockPos pos, int height, long[] seeds);
 	
 	public boolean grow(World world, BlockPos pos);
 }

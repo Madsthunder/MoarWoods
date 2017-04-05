@@ -1,5 +1,7 @@
 package moarwoods.blocks.living.tree;
 
+import java.util.Random;
+
 import moarwoods.MoarWoods;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
@@ -23,11 +25,12 @@ public class SmallJungleTree extends SmallOakTree
 	}
 	
 	@Override
-	public int getDynamicHeightLimitFactor(World world, BlockPos pos)
+	public int getHeightLimit(World world, BlockPos pos, long[] seeds)
 	{
 		Biome biome = world.getBiome(pos);
 		float humidity = Math.min(.9F, biome.getTemperature() * biome.getRainfall());
-		return 0 >= humidity ? 0 : Float.valueOf(7 * (humidity + .1F)).intValue();
+		Random random = new Random(seeds[0]);
+		return 4 + random.nextInt(3) + random.nextInt(0 >= humidity ? 1 : Math.max(1, Float.valueOf(7 * (humidity + .1F)).intValue()));
 	}
 	
 }

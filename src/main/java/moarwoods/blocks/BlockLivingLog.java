@@ -59,20 +59,22 @@ public class BlockLivingLog extends BlockLog
 		if(!world.isRemote && AbstractPlant.isBase(world, pos, this) && seed != null)
 		{
 			int height = AbstractPlant.getHieght(world, pos, this);
+			long[] seeds = new long[3];
+			{
+				Random r = new Random(seed);
+				for(int i = 0; i < seeds.length; i++)
+					seeds[i] = r.nextLong();
+			}
 			int total_energy;
 			TObjectIntHashMap<BlockPos.MutableBlockPos> energy_sources;
 			{
-				Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> pair = AbstractPlant.getTotalEnergy(world, pos, this.plant.getLeafSearchRadius(height), height + this.plant.getLeafSearchExtraHeight(height), this.plant.getLeafBlock());
+				Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> pair = AbstractPlant.getTotalEnergy(world, pos, this.plant.getLeafSearchRadius(world, pos, height, seeds), height + this.plant.getLeafSearchExtraHeight(world, pos, height, seeds), this.plant.getLeafBlock());
 				total_energy = pair.getLeft();
 				energy_sources = pair.getRight();
 			}
 			if(total_energy >= 1)
 			{
-				Random r = new Random(seed);
-				for(int i = 0; i < 2; i++)
-					r.nextLong();
-				long leaves_seed = r.nextLong();
-				List<BlockPos> leaves = this.plant.getLeaves(pos, height, leaves_seed);
+				List<BlockPos> leaves = this.plant.getLeaves(world, pos, height, seeds);
 				if(!leaves.isEmpty())
 				{
 					BlockPos pos1 = leaves.get(world.rand.nextInt(leaves.size()));
