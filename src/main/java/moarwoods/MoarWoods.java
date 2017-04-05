@@ -6,13 +6,21 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import moarwoods.blocks.BlockLiveLeaves;
-import moarwoods.blocks.BlockLiveLog;
+import gnu.trove.map.hash.TObjectIntHashMap;
+import moarwoods.blocks.BlockLivingLeaf;
+import moarwoods.blocks.BlockLivingLog;
+import moarwoods.blocks.living.tree.AbstractPlant;
+import moarwoods.blocks.living.tree.BirchTree;
+import moarwoods.blocks.living.tree.IPlant;
+import moarwoods.blocks.living.tree.SmallJungleTree;
+import moarwoods.blocks.living.tree.SmallOakTree;
 import moarwoods.capability.CapabilityFarmer;
 import moarwoods.client.renderers.entity.RenderVillagerWrapper;
 import moarwoods.entity.ai.EntityAIRunAroundLikeCrazyWrapper;
@@ -20,6 +28,7 @@ import moarwoods.entity.ai.EntityAITameHorse;
 import moarwoods.villagers.VillagerFarmer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
+import net.minecraft.block.BlockNewLeaf;
 import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
@@ -28,6 +37,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerVillagerArmor;
 import net.minecraft.entity.Entity;
@@ -46,15 +56,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.ColorizerFoliage;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeColorHelper;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -153,8 +165,18 @@ public class MoarWoods
 			@Override
 			public void pre()
 			{
-				ModelLoader.setCustomStateMapper(LIVE_BIRCH_LOG, createLogStateMapper());
-				ModelLoader.setCustomStateMapper(LIVE_BIRCH_LEAVES, createLeavesStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_OAK_LOG, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_SPRUCE_LOG, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_BIRCH_LOG, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_JUNGLE_LOG, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_ACACIA_LOG, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_DARKOAK_LOG, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_OAK_LEAF, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_SPRUCE_LEAF, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_BIRCH_LEAF, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_JUNGLE_LEAF, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_ACACIA_LEAF, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(LIVING_DARKOAK_LEAF, createLeafStateMapper());
 			}
 			
 			@Override
@@ -163,7 +185,15 @@ public class MoarWoods
 				super.init();
 				RenderManager manager = Minecraft.getMinecraft().getRenderManager();
 				manager.entityRenderMap.replace(EntityVillager.class, new RenderVillagerWrapper(manager));
-				Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorBirch(), LIVE_BIRCH_LEAVES);
+				{
+					BlockColors colors = Minecraft.getMinecraft().getBlockColors();
+					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_OAK_LEAF);
+					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorPine(), LIVING_SPRUCE_LEAF);
+					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorBirch(), LIVING_BIRCH_LEAF);
+					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_JUNGLE_LEAF);
+					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_ACACIA_LEAF);
+					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_DARKOAK_LEAF);
+				}
 			}
 			
 			private static IStateMapper createLogStateMapper()
@@ -180,7 +210,7 @@ public class MoarWoods
 				};
 			}
 			
-			private static IStateMapper createLeavesStateMapper()
+			private static IStateMapper createLeafStateMapper()
 			{
 				return new StateMapperBase()
 				{
@@ -202,10 +232,32 @@ public class MoarWoods
 		}
 	}
 	
-	@GameRegistry.ObjectHolder("moarwoods:live_birch_log")
-	public static final BlockLiveLog LIVE_BIRCH_LOG = null;
-	@GameRegistry.ObjectHolder("moarwoods:live_birch_leaves")
-	public static final BlockLiveLeaves LIVE_BIRCH_LEAVES = null;
+	@GameRegistry.ObjectHolder("minecraft:sapling")
+	public static final BlockSapling SAPLING = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_oak_log")
+	public static final BlockLivingLog LIVING_OAK_LOG = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_spruce_log")
+	public static final BlockLivingLog LIVING_SPRUCE_LOG = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_birch_log")
+	public static final BlockLivingLog LIVING_BIRCH_LOG = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_jungle_log")
+	public static final BlockLivingLog LIVING_JUNGLE_LOG = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_acacia_log")
+	public static final BlockLivingLog LIVING_ACACIA_LOG = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_darkoak_log")
+	public static final BlockLivingLog LIVING_DARKOAK_LOG = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_oak_leaf")
+	public static final BlockLivingLeaf LIVING_OAK_LEAF = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_spruce_leaf")
+	public static final BlockLivingLeaf LIVING_SPRUCE_LEAF = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_birch_leaf")
+	public static final BlockLivingLeaf LIVING_BIRCH_LEAF = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_jungle_leaf")
+	public static final BlockLivingLeaf LIVING_JUNGLE_LEAF = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_acacia_leaf")
+	public static final BlockLivingLeaf LIVING_ACACIA_LEAF = null;
+	@GameRegistry.ObjectHolder("moarwoods:living_darkoak_leaf")
+	public static final BlockLivingLeaf LIVING_DARKOAK_LEAF = null;
 	
 	@GameRegistry.ObjectHolder("minecraft:farmer")
 	public static final VillagerProfession FARMER = null;
@@ -218,10 +270,20 @@ public class MoarWoods
 	{
 		List<Block> blocks = Lists.newArrayList();
 		{
-			blocks.add(new BlockLiveLog().setRegistryName("moarwoods:live_birch_log"));
+			blocks.add(new BlockLivingLog(new SmallOakTree()).setRegistryName("moarwoods:living_oak_log"));
+			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:living_spruce_log"));
+			blocks.add(new BlockLivingLog(new BirchTree()).setRegistryName("moarwoods:living_birch_log"));
+			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:living_jungle_log"));
+			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:living_acacia_log"));
+			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:living_darkoak_log"));
 		}
 		{
-			blocks.add(new BlockLiveLeaves(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.BIRCH)).setRegistryName("moarwoods:live_birch_leaves"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK)).setRegistryName("moarwoods:living_oak_leaf"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.SPRUCE)).setRegistryName("moarwoods:living_spruce_leaf"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.BIRCH)).setRegistryName("moarwoods:living_birch_leaf"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)).setRegistryName("moarwoods:living_jungle_leaf"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)).setRegistryName("moarwoods:living_acacia_leaf"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)).setRegistryName("moarwoods:living_darkoak_leaf"));
 		}
 		event.getRegistry().registerAll(Iterables.toArray(blocks, Block.class));
 	}
@@ -315,7 +377,7 @@ public class MoarWoods
 			{
 				array = new byte[65536];
 				for(int i = 0; i < array.length; i++)
-					array[i] = ((Integer)(random.nextInt(256) - 128)).byteValue();
+					array[i] = Integer.valueOf(random.nextInt()).byteValue();
 			}
 			if(array.length < 65536)
 			{
@@ -328,7 +390,7 @@ public class MoarWoods
 			}
 			Map<ChunkPos, byte[]> block_history = BLOCK_HISTORY.getOrDefault(world, Maps.newHashMap());
 			block_history.put(chunk.getPos(), array);
-			BLOCK_HISTORY.put(world, block_history);
+			BLOCK_HISTORY.putIfAbsent(world, block_history);
 		}
 	}
 	
@@ -365,11 +427,30 @@ public class MoarWoods
 	}
 	
 	@SubscribeEvent
+	public static void onChunkLoad(ChunkEvent.Load event)
+	{
+		World world = event.getWorld();
+		if(!world.isRemote)
+		{
+			ChunkPos pos = event.getChunk().getPos();
+			Map<ChunkPos, byte[]> map = BLOCK_HISTORY.getOrDefault(world, Maps.newHashMap());
+			if(!map.containsKey(pos))
+			{
+				Random random = world.rand;
+				byte[] array = new byte[65536];
+				for(int i = 0; i < array.length; i++)
+					array[i] = Integer.valueOf(random.nextInt()).byteValue();
+				map.put(pos, array);
+			}
+			BLOCK_HISTORY.putIfAbsent(world, map);
+		}
+	}
+	
+	@SubscribeEvent
 	public static void onChunkUnload(ChunkEvent.Unload event)
 	{
 		Chunk chunk = event.getChunk();
-		World world = chunk.getWorld();
-		BLOCK_HISTORY.getOrDefault(world, Maps.newHashMap()).remove(new ChunkPos(chunk.xPosition, chunk.zPosition));
+		BLOCK_HISTORY.getOrDefault(chunk.getWorld(), Maps.newHashMap()).remove(chunk.getPos());
 	}
 	
 	@SubscribeEvent
@@ -378,14 +459,64 @@ public class MoarWoods
 		BLOCK_HISTORY.remove(event.getWorld());
 	}
 	
+	@SubscribeEvent
+	public static void onBonemealUse(BonemealEvent event)
+	{
+		IBlockState state = event.getBlock();
+		World world = event.getWorld();
+		BlockPos pos = event.getPos();
+		if(state.getBlock() instanceof BlockLivingLog)
+		{
+			BlockLivingLog block = (BlockLivingLog)state.getBlock();
+			if(!block.getPlant().grow(world, pos))
+			{
+				Byte seed = MoarWoods.getBlockHistory(world, pos);
+				if(!world.isRemote && AbstractPlant.isBase(world, pos, block) && seed != null)
+				{
+					IPlant plant = block.getPlant();
+					int height = AbstractPlant.getHieght(world, pos, block);
+					int total_energy;
+					TObjectIntHashMap<BlockPos.MutableBlockPos> energy_sources;
+					{
+						Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> pair = AbstractPlant.getTotalEnergy(world, pos, plant.getLeafSearchRadius(height), height + plant.getLeafSearchExtraHeight(height), plant.getLeafBlock());
+						total_energy = pair.getLeft();
+						energy_sources = pair.getRight();
+					}
+					if(total_energy >= 1)
+					{
+						Random r = new Random(seed);
+						for(int i = 0; i < 2; i++)
+							r.nextLong();
+						long leaves_seed = r.nextLong();
+						List<BlockPos> leaves = plant.getLeaves(pos, height, leaves_seed);
+						if(!leaves.isEmpty())
+						{
+							BlockPos pos1 = leaves.get(world.rand.nextInt(leaves.size()));
+							if(world.getBlockState(pos1).getBlock() != plant.getLeafBlock() && AbstractPlant.setLeaves(world, pos1, plant.getLeafBlock()))
+								AbstractPlant.useEnergy(world, 1, energy_sources, plant.getLeafBlock());
+							event.setResult(Result.ALLOW);
+						}
+					}
+				}
+			}
+			else
+				event.setResult(Result.ALLOW);
+		}
+		else if(state.getBlock() instanceof BlockLivingLeaf)
+		{
+			world.setBlockState(pos, state.withProperty(BlockLivingLeaf.ENERGY, Math.min(state.getValue(BlockLivingLeaf.ENERGY) + 1, 7)));
+			event.setResult(Result.ALLOW);
+		}
+	}
+	
 	@Nullable
-	public static Byte getBlockHistory(IBlockAccess world, BlockPos pos)
+	public static Byte getBlockHistory(World world, BlockPos pos)
 	{
 		Map<ChunkPos, byte[]> block_history = BLOCK_HISTORY.getOrDefault(world, Maps.newHashMap());
 		ChunkPos cpos = new ChunkPos(pos);
 		if(pos.getY() > 255 || pos.getY() < 0 || !block_history.containsKey(cpos))
 			return null;
-		return block_history.get(cpos)[(pos.getY() * 256) + ((pos.getX() & 15) * 16) + pos.getZ() & 15];
+		return block_history.get(cpos)[(pos.getY() * 256) + ((pos.getX() & 15) * 16) + (pos.getZ() & 15)];
 	}
 	
 	public static void setBlockHistory(World world, BlockPos pos, byte history)
@@ -393,7 +524,7 @@ public class MoarWoods
 		Map<ChunkPos, byte[]> block_history = BLOCK_HISTORY.getOrDefault(world, Maps.newHashMap());
 		ChunkPos cpos = new ChunkPos(pos);
 		if(pos.getY() <= 255 && pos.getY() >= 0 && block_history.containsKey(cpos))
-			block_history.get(cpos)[(pos.getY() * 256) + ((pos.getX() & 15) * 16) + pos.getZ() & 15] = history;
+			block_history.get(cpos)[(pos.getY() * 256) + ((pos.getX() & 15) * 16) + (pos.getZ() & 15)] = history;
 	}
 	
 	@SubscribeEvent
@@ -415,24 +546,63 @@ public class MoarWoods
 			World world = event.getWorld();
 			BlockPos pos = event.getPos();
 			IBlockState state = world.getBlockState(pos);
-			if(state.getBlock() == Blocks.SAPLING && state.getValue(BlockSapling.TYPE) == BlockPlanks.EnumType.BIRCH)
+			if(state.getBlock() == Blocks.SAPLING)
 			{
-				if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1) && checkIfCanGrow(world, pos.up(2), 0))
-				{
-					world.setBlockState(pos, LIVE_BIRCH_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
-					world.setBlockState(pos.up(), LIVE_BIRCH_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
-					IBlockState leaves = LIVE_BIRCH_LEAVES.getDefaultState();
-					world.setBlockState(pos.up(2), leaves);
-					world.setBlockState(pos.up().north(), leaves);
-					world.setBlockState(pos.up().south(), leaves);
-					world.setBlockState(pos.up().west(), leaves);
-					world.setBlockState(pos.up().east(), leaves);
-					Random random = new Random(getBlockHistory(world, pos.down()));
-					setBlockHistory(world, pos, Integer.valueOf(random.nextInt(256) - 128).byteValue());
-					setBlockHistory(world, pos.up(), Integer.valueOf(random.nextInt(256) - 128).byteValue());
-					setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
-				}
+				BlockPlanks.EnumType type = state.getValue(BlockSapling.TYPE);
 				event.setResult(Result.DENY);
+				switch(type)
+				{
+					case OAK:
+					{
+						if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
+						{
+							world.setBlockState(pos, LIVING_OAK_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
+							AbstractPlant.setLeaves(world, pos.up(), LIVING_OAK_LEAF);
+							Byte h = getBlockHistory(world, pos.down());
+							setBlockHistory(world, pos, Integer.valueOf(new Random(h).nextInt()).byteValue());
+							setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
+						}
+						break;
+					}
+					case SPRUCE:
+					{
+						break;
+					}
+					case BIRCH:
+					{
+						if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
+						{
+							world.setBlockState(pos, LIVING_BIRCH_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
+							AbstractPlant.setLeaves(world, pos.up(), LIVING_BIRCH_LEAF);
+							setBlockHistory(world, pos, Integer.valueOf(new Random(getBlockHistory(world, pos.down())).nextInt(256) - 128).byteValue());
+							setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
+						}
+						break;
+					}
+					case JUNGLE:
+					{
+						if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
+						{
+							world.setBlockState(pos, LIVING_JUNGLE_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
+							AbstractPlant.setLeaves(world, pos.up(), LIVING_JUNGLE_LEAF);
+							setBlockHistory(world, pos, Integer.valueOf(new Random(getBlockHistory(world, pos.down())).nextInt(256) - 128).byteValue());
+							setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
+						}
+						break;
+					}
+					case ACACIA:
+					{
+						break;
+					}
+					case DARK_OAK:
+					{
+						break;
+					}
+					default:
+					{
+						event.setResult(Result.DEFAULT);
+					}
+				}
 			}
 		}
 		

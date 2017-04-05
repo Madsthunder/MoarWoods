@@ -1,0 +1,18 @@
+{
+    "forge_marker": 1,
+    "defaults":
+    {
+        "model": "minecraft:jungle_log"
+    },
+    
+    "variants":
+    {
+        "axis":
+        {
+            "x": { "x": 90 },
+            "y": { },
+            "z": { "x": 90, "y": 90 },
+            "none": { "model": "minecraft:jungle_bark" }
+        }
+    }
+}
