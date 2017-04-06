@@ -1,0 +1,39 @@
+{
+    "textures":
+    {
+        "apple": "moarwoods:blocks/apple_green",
+        "stem": "moarwoods:blocks/apple_stem_green"
+    },
+    
+    "elements":
+    [
+        {
+            "_comment": "fruit",
+            "from": [ 6, 6, 6 ],
+            "to": [ 10, 10, 10 ],
+            "faces":
+            {
+                "down": { "texture": "#apple" },
+                "up": { "texture": "#apple" },
+                "north": { "texture": "#apple" },
+                "south": { "texture": "#apple" },
+                "west": { "texture": "#apple" },
+                "east": { "texture": "#apple" }
+            }
+        },
+        
+        {
+            "_comment": "stem",
+            "from": [ 7.5, 10, 7.5 ],
+            "to": [ 8.5, 11, 8.5 ],
+            "faces":
+            {
+                "up": { "texture": "#stem" },
+                "north": { "texture": "#stem" },
+                "south": { "texture": "#stem" },
+                "west": { "texture": "#stem" },
+                "east": { "texture": "#stem" }
+            }
+        }
+    ]
+}
