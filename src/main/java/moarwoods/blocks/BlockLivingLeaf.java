@@ -110,7 +110,7 @@ public class BlockLivingLeaf extends BlockLeaves
                                     			for(int i = 0; i < seeds.length; i++)
                                     				seeds[i] = random1.nextLong();
                                     		}
-                                    		if(log.getPlant().getLeaves(world, base, AbstractPlant.getHieght(world, base, log), seeds).contains(pos))
+                                    		if(log.getPlant().getLeaves(world, base, AbstractPlant.getHeight(world, base, log), seeds).contains(pos))
                                     		{
                                     			markedtrees.put(base, 0);
                                         		this.surroundings[(x1 + 16) * 1024 + (y2 + 16) * 32 + y3 + 16] = 0;

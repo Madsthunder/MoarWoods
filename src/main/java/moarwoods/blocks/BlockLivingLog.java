@@ -58,7 +58,7 @@ public class BlockLivingLog extends BlockLog
 		Byte seed = MoarWoods.getBlockHistory(world, pos);
 		if(!world.isRemote && AbstractPlant.isBase(world, pos, this) && seed != null)
 		{
-			int height = AbstractPlant.getHieght(world, pos, this);
+			int height = AbstractPlant.getHeight(world, pos, this);
 			long[] seeds = new long[3];
 			{
 				Random r = new Random(seed);

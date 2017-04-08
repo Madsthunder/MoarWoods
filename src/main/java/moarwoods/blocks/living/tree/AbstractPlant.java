@@ -1,8 +1,8 @@
 package moarwoods.blocks.living.tree;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,7 +13,6 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 import moarwoods.MoarWoods;
@@ -40,36 +39,41 @@ public abstract class AbstractPlant implements IPlant
 		return 7;
 	}
 	
-	public int getLeafLiftRadius(World world, BlockPos pos, int height, long[] seeds)
+	public int getLeafShiftRadius(World world, BlockPos pos, int height, long[] seeds)
 	{
 		return this.getLeafSearchRadius(world, pos, height, seeds);
 	}
 	
-	public int getLeafLiftExtraHeight(World world, BlockPos pos, int height, long[] seeds)
+	public int getLeafShiftExtraHeight(World world, BlockPos pos, int height, long[] seeds)
 	{
 		return this.getLeafSearchExtraHeight(world, pos, height, seeds);
 	}
 	
-	public Map<BlockPos, BlockPos> liftLeaves(World world, BlockPos pos, int height, long[] seeds)
+	public Map<BlockPos, BlockPos> shiftLeaves(World world, BlockPos pos, int from_height, int to_height, long[] seeds)
 	{
 		Map<BlockPos, BlockPos> transformations = Maps.newHashMap();
-		Predicate<Triple<IBlockState, World, BlockPos>> predicate = (triple) -> triple.getLeft().getBlock() instanceof BlockLeaves;
-		int lift_radius = this.getLeafLiftRadius(world, pos, height, seeds);
-		int lift_height = height + this.getLeafSearchExtraHeight(world, pos, height, seeds);
-		for(int x = -lift_radius; x <= lift_radius; x++)
-			for(int y = lift_height - 1; 0 <= y; y--)
-				for(int z = -lift_radius; z <= lift_radius; z++)
+		if(from_height == to_height)
+			return transformations;
+		int shift_radius = this.getLeafShiftRadius(world, pos, from_height, seeds);
+		int shift_height = from_height + this.getLeafShiftExtraHeight(world, pos, from_height, seeds);
+		Map<BlockPos, IBlockState> to_set = Maps.newHashMap();
+		for(int x = -shift_radius; x <= shift_radius; x++)
+			for(int y = 0; y < shift_height; y++)
+				for(int z = -shift_radius; z <= shift_radius; z++)
 				{
 					BlockPos pos1 = pos.add(x, y, z);
 					IBlockState state1 = world.getBlockState(pos1);
 					if(state1.getBlock() == this.getLeafBlock())
 					{
 						world.setBlockToAir(pos1);
-						BlockPos pos2 = pos1.up();
-						AbstractPlant.setLeaves(world, pos2, state1, predicate);
+						BlockPos pos2 = pos1.up(to_height - from_height);
 						transformations.put(pos1, pos2);
+						to_set.put(pos2, state1);
 					}
 				}
+		Predicate<Triple<IBlockState, World, BlockPos>> predicate = (triple) -> triple.getLeft().getBlock() instanceof BlockLeaves;
+		for(Entry<BlockPos, IBlockState> entry : to_set.entrySet())
+			AbstractPlant.setLeaves(world, entry.getKey(), entry.getValue(), predicate);
 		return transformations;
 	}
 	
@@ -92,11 +96,23 @@ public abstract class AbstractPlant implements IPlant
 				seeds = new long[] { random.nextLong(), random.nextLong(), random.nextLong() };
 			}
 			int height_limit = this.getHeightLimit(world, pos, seeds);
-			int current_height = 0;
-			for(;;current_height++)
-				if(world.getBlockState(pos.up(current_height)).getBlock() != this.getLogBlock())
-					break;
-			if(current_height >= height_limit)
+			int current_height = getHeight(world, pos, this.getLogBlock());
+			if(current_height > height_limit)
+			{
+				BlockPos pos1 = pos.up(current_height - 1);
+				IBlockState state1 = world.getBlockState(pos1);
+				if(state1.getValue(BlockLivingLog.DYING))
+				{
+					world.setBlockToAir(pos1);
+					this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
+				}
+				else
+				{
+					world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DYING, true));
+				}
+				return false;
+			}
+			if(current_height == height_limit)
 				return false;
 			int total_energy;
 			TObjectIntHashMap<BlockPos.MutableBlockPos> energy_sources;
@@ -118,7 +134,7 @@ public abstract class AbstractPlant implements IPlant
 				}
 				{
 					{
-						Map<BlockPos, BlockPos> transformations = this.liftLeaves(world, pos, current_height, seeds);
+						Map<BlockPos, BlockPos> transformations = this.shiftLeaves(world, pos, current_height, current_height + 1, seeds);
 						TObjectIntHashMap<BlockPos.MutableBlockPos> new_energy_sources = new TObjectIntHashMap<BlockPos.MutableBlockPos>();
 						for(BlockPos.MutableBlockPos pos1 : energy_sources.keySet())
 						{
@@ -191,7 +207,7 @@ public abstract class AbstractPlant implements IPlant
 		return down.getBlock() != block && down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, MoarWoods.SAPLING);
 	}
 	
-	public static int getHieght(World world, BlockPos pos, BlockLivingLog block)
+	public static int getHeight(World world, BlockPos pos, BlockLivingLog block)
 	{
 		int current_height = 0;
 		for(;;current_height++)

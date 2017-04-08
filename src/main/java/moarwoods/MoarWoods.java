@@ -21,6 +21,7 @@ import moarwoods.blocks.living.tree.BirchTree;
 import moarwoods.blocks.living.tree.IPlant;
 import moarwoods.blocks.living.tree.SmallJungleTree;
 import moarwoods.blocks.living.tree.SmallOakTree;
+import moarwoods.blocks.living.tree.SmallSpruceTree;
 import moarwoods.capability.CapabilityFarmer;
 import moarwoods.client.renderers.entity.RenderVillagerWrapper;
 import moarwoods.entity.ai.EntityAIRunAroundLikeCrazyWrapper;
@@ -56,7 +57,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.ColorizerFoliage;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeColorHelper;
@@ -271,7 +271,7 @@ public class MoarWoods
 		List<Block> blocks = Lists.newArrayList();
 		{
 			blocks.add(new BlockLivingLog(new SmallOakTree()).setRegistryName("moarwoods:living_oak_log"));
-			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:living_spruce_log"));
+			blocks.add(new BlockLivingLog(new SmallSpruceTree()).setRegistryName("moarwoods:living_spruce_log"));
 			blocks.add(new BlockLivingLog(new BirchTree()).setRegistryName("moarwoods:living_birch_log"));
 			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:living_jungle_log"));
 			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:living_acacia_log"));
@@ -474,7 +474,7 @@ public class MoarWoods
 				if(!world.isRemote && AbstractPlant.isBase(world, pos, block) && seed != null)
 				{
 					IPlant plant = block.getPlant();
-					int height = AbstractPlant.getHieght(world, pos, block);
+					int height = AbstractPlant.getHeight(world, pos, block);
 					long[] seeds = new long[3];
 					{
 						Random r = new Random(seed);
@@ -568,6 +568,13 @@ public class MoarWoods
 					}
 					case SPRUCE:
 					{
+						if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
+						{
+							world.setBlockState(pos, LIVING_SPRUCE_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
+							AbstractPlant.setLeaves(world, pos.up(), LIVING_SPRUCE_LEAF);
+							setBlockHistory(world, pos, Integer.valueOf(new Random(getBlockHistory(world, pos.down())).nextInt(256) - 128).byteValue());
+							setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
+						}
 						break;
 					}
 					case BIRCH:
