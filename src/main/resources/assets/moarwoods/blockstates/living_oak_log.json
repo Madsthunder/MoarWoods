@@ -2,7 +2,12 @@
     "forge_marker": 1,
     "defaults":
     {
-        "model": "minecraft:oak_log"
+        "model": "moarwoods:log",
+        "textures":
+        {
+            "bark": "minecraft:blocks/log_oak",
+            "end": "minecraft:blocks/log_oak_top"
+        }
     },
     
     "variants":
@@ -12,7 +17,7 @@
             "x": { "x": 90 },
             "y": { },
             "z": { "x": 90, "y": 90 },
-            "none": { "model": "minecraft:oak_bark" }
+            "none": { "textures": { "end": "#bark" } }
         }
     }
 }

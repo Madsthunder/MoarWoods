@@ -90,7 +90,7 @@ public class BlockLivingLeaf extends BlockLeaves
                                 else if(block instanceof BlockLivingLog)
                                 {
                                 	BlockLivingLog log = (BlockLivingLog)block;
-                                	if(log.getPlant().getLeafBlock() == this)
+                                	if(log.getPlant() != null && log.getPlant().getLeafBlock() == this)
                                 	{
                                     	BlockPos base = blockpos$mutableblockpos.toImmutable();
                                     	while(world.getBlockState(base.down()).getBlock() == log)

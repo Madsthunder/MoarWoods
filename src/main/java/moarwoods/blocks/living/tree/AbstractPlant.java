@@ -101,14 +101,15 @@ public abstract class AbstractPlant implements IPlant
 			{
 				BlockPos pos1 = pos.up(current_height - 1);
 				IBlockState state1 = world.getBlockState(pos1);
-				if(state1.getValue(BlockLivingLog.DYING))
+				int stage = state1.getValue(BlockLivingLog.DEATH_STAGE);
+				if(stage >= 3)
 				{
 					world.setBlockToAir(pos1);
 					this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
 				}
 				else
 				{
-					world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DYING, true));
+					world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DEATH_STAGE, stage + 1));
 				}
 				return false;
 			}
@@ -120,6 +121,22 @@ public abstract class AbstractPlant implements IPlant
 				Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> pair = getTotalEnergy(world, pos, this.getLeafSearchRadius(world, pos, current_height, seeds), current_height + this.getLeafSearchExtraHeight(world, pos, current_height, seeds), this.getLeafBlock());
 				total_energy = pair.getLeft();
 				energy_sources = pair.getRight();
+			}
+			if(this.getRequiredEnergyForGrowth(world, pos, current_height) > total_energy)
+			{
+				BlockPos pos1 = pos.up(current_height - 1);
+				IBlockState state1 = world.getBlockState(pos1);
+				int stage = state1.getValue(BlockLivingLog.DEATH_STAGE);
+				if(stage >= 3)
+				{
+					world.setBlockToAir(pos1);
+					this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
+				}
+				else
+				{
+					world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DEATH_STAGE, stage + 1));
+				}
+				return false;
 			}
 			int used_energy = 0;
 			{
@@ -214,6 +231,14 @@ public abstract class AbstractPlant implements IPlant
 			if(world.getBlockState(pos.up(current_height)).getBlock() != block)
 				break;
 		return current_height;
+	}
+	
+	public static boolean hasBase(World world, BlockPos pos, BlockLivingLog block)
+	{
+		while(!isBase(world, pos, block))
+			if(world.getBlockState(pos = pos.down()).getBlock() != block)
+				return false;
+		return true;
 	}
 	
 	public static boolean setLeaves(World world, BlockPos pos, BlockLivingLeaf leaves)

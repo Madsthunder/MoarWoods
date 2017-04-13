@@ -11,50 +11,58 @@ import moarwoods.blocks.living.tree.AbstractPlant;
 import moarwoods.blocks.living.tree.IPlant;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockLivingLog extends BlockLog
 {
-	public static final PropertyBool DYING = PropertyBool.create("dying");
+	public static final PropertyInteger DEATH_STAGE = PropertyInteger.create("death_stage", 0, 3);
 	private final IPlant plant;
 	
 	public BlockLivingLog(IPlant plant)
 	{
 		this.setTickRandomly(true);
-		this.setDefaultState(this.getDefaultState().withProperty(DYING, false));
+		this.setDefaultState(this.getDefaultState().withProperty(DEATH_STAGE, 0));
 		this.plant = plant;
 	}
 	
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		return (state.getValue(DYING) ? 8 : 0) + state.getValue(BlockLog.LOG_AXIS).ordinal();
+		return (state.getValue(DEATH_STAGE) * 4) + state.getValue(BlockLog.LOG_AXIS).ordinal();
 	}
 	
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		return this.getDefaultState().withProperty(DYING, meta >= 8).withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.values()[meta & 3]);
-	}
-	
-	@Override
-	public boolean canSustainLeaves(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		return !state.getValue(DYING);
+		return this.getDefaultState().withProperty(DEATH_STAGE, Math.min(3, Math.max(0, meta / 4))).withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.values()[meta & 3]);
 	}
 	
 	@Override
 	public void randomTick(World world, BlockPos pos, IBlockState state, Random random)
 	{
-		
+		if(this.plant == null)
+			return;
 		if(random.nextInt(14) == 0)
 			if(this.plant.grow(world, pos))
 				return;
+			else if(!AbstractPlant.hasBase(world, pos, this.plant.getLogBlock()) && world.getBlockState(pos.up()).getBlock() != this.plant.getLogBlock() && random.nextInt(6) == 0)
+			{
+				int death_stage = state.getValue(DEATH_STAGE);
+				if(death_stage >= 3)
+				{
+					world.setBlockToAir(pos);
+					world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, SoundCategory.BLOCKS, 1F, 2F, false);
+				}
+				else
+					world.setBlockState(pos, state.withProperty(DEATH_STAGE, death_stage + 1));
+			}
 		Byte seed = MoarWoods.getBlockHistory(world, pos);
 		if(!world.isRemote && AbstractPlant.isBase(world, pos, this) && seed != null)
 		{
@@ -93,6 +101,6 @@ public class BlockLivingLog extends BlockLog
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new BlockStateContainer(this, new IProperty[] { BlockLog.LOG_AXIS, DYING});
+		return new BlockStateContainer(this, new IProperty[] { BlockLog.LOG_AXIS, DEATH_STAGE});
 	}
 }

@@ -1,5 +1,6 @@
 package moarwoods;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -39,6 +40,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerVillagerArmor;
 import net.minecraft.entity.Entity;
@@ -187,6 +189,16 @@ public class MoarWoods
 				manager.entityRenderMap.replace(EntityVillager.class, new RenderVillagerWrapper(manager));
 				{
 					BlockColors colors = Minecraft.getMinecraft().getBlockColors();
+					{
+						IBlockColor default_color = (state, access, pos, tintIndex) -> { int c = 195 + (20 * state.getValue(BlockLivingLog.DEATH_STAGE)); return (c * 65536) + 65280 + c;};
+						colors.registerBlockColorHandler(default_color, LIVING_OAK_LOG);
+						colors.registerBlockColorHandler(default_color, LIVING_SPRUCE_LOG);
+						colors.registerBlockColorHandler(default_color, LIVING_BIRCH_LOG);
+						colors.registerBlockColorHandler(default_color, LIVING_JUNGLE_LOG);
+						colors.registerBlockColorHandler(default_color, LIVING_ACACIA_LOG);
+						colors.registerBlockColorHandler(default_color, LIVING_DARKOAK_LOG);
+
+					}
 					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_OAK_LEAF);
 					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorPine(), LIVING_SPRUCE_LEAF);
 					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorBirch(), LIVING_BIRCH_LEAF);
