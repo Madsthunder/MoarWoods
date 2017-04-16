@@ -113,12 +113,10 @@ public abstract class AbstractPlant implements IPlant
 				}
 				return false;
 			}
-			if(current_height == height_limit)
-				return false;
 			int total_energy;
-			TObjectIntHashMap<BlockPos.MutableBlockPos> energy_sources;
+			TObjectIntHashMap<BlockPos> energy_sources;
 			{
-				Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> pair = getTotalEnergy(world, pos, this.getLeafSearchRadius(world, pos, current_height, seeds), current_height + this.getLeafSearchExtraHeight(world, pos, current_height, seeds), this.getLeafBlock());
+				Pair<Integer, TObjectIntHashMap<BlockPos>> pair = getTotalEnergy(world, pos, this.getLeafSearchRadius(world, pos, current_height, seeds), current_height + this.getLeafSearchExtraHeight(world, pos, current_height, seeds), this.getLeafBlock());
 				total_energy = pair.getLeft();
 				energy_sources = pair.getRight();
 			}
@@ -138,6 +136,8 @@ public abstract class AbstractPlant implements IPlant
 				}
 				return false;
 			}
+			if(current_height == height_limit)
+				return false;
 			int used_energy = 0;
 			{
 				int required_energy = this.getRequiredEnergyForGrowth(world, pos, current_height);
@@ -152,10 +152,10 @@ public abstract class AbstractPlant implements IPlant
 				{
 					{
 						Map<BlockPos, BlockPos> transformations = this.shiftLeaves(world, pos, current_height, current_height + 1, seeds);
-						TObjectIntHashMap<BlockPos.MutableBlockPos> new_energy_sources = new TObjectIntHashMap<BlockPos.MutableBlockPos>();
-						for(BlockPos.MutableBlockPos pos1 : energy_sources.keySet())
+						TObjectIntHashMap<BlockPos> new_energy_sources = new TObjectIntHashMap<BlockPos>();
+						for(BlockPos pos1 : energy_sources.keySet())
 						{
-							BlockPos.MutableBlockPos newpos = new BlockPos.MutableBlockPos(transformations.getOrDefault(pos1, pos1));
+							BlockPos newpos = new BlockPos(transformations.getOrDefault(pos1, pos1));
 							int energy = energy_sources.get(pos1);
 							if(new_energy_sources.contains(newpos))
 								new_energy_sources.adjustValue(newpos, energy);
@@ -174,9 +174,9 @@ public abstract class AbstractPlant implements IPlant
 		return false;
 	}
 
-	public static Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> getTotalEnergy(World world, BlockPos pos, int search_radius, int search_height, BlockLivingLeaf block)
+	public static Pair<Integer, TObjectIntHashMap<BlockPos>> getTotalEnergy(World world, BlockPos pos, int search_radius, int search_height, BlockLivingLeaf block)
 	{
-		TObjectIntHashMap<BlockPos.MutableBlockPos> energy_map = new TObjectIntHashMap<BlockPos.MutableBlockPos>();
+		TObjectIntHashMap<BlockPos> energy_map = new TObjectIntHashMap<BlockPos>();
 		int totalenergy = 0;
 		for(int y = 0; y < search_height; y++)
 			for(int x = -search_radius; x <= search_radius; x++)
@@ -186,13 +186,9 @@ public abstract class AbstractPlant implements IPlant
 					IBlockState state = world.getBlockState(pos1);
 					if(state.getBlock() == block)
 					{
-						TObjectIntHashMap m = new TObjectIntHashMap();
 						int energy = state.getValue(BlockLivingLeaf.ENERGY);
-						if(energy > 0)
-						{
-							totalenergy += energy;
-							energy_map.put(new BlockPos.MutableBlockPos(pos1), energy);
-						}
+						totalenergy += energy;
+						energy_map.put(pos1, energy);
 					}
 				}
 		return Pair.of(totalenergy, energy_map);
@@ -212,7 +208,8 @@ public abstract class AbstractPlant implements IPlant
 				energy_sources.remove(pos);
 				energy_positions.remove(pos);
 			}
-			tochange.put(pos, Math.max(0, new_energy));
+			if(new_energy != -1)
+				tochange.put(pos, Math.max(0, new_energy));
 		}
 		for(BlockPos pos : tochange.keySet())
 			world.setBlockState(pos, block.getDefaultState().withProperty(BlockLivingLeaf.ENERGY, Math.min(7, tochange.get(pos))));
@@ -239,6 +236,14 @@ public abstract class AbstractPlant implements IPlant
 			if(world.getBlockState(pos = pos.down()).getBlock() != block)
 				return false;
 		return true;
+	}
+	
+	public static BlockPos getBase(World world, BlockPos pos, BlockLivingLog block)
+	{
+		while(!isBase(world, pos, block))
+			if(world.getBlockState(pos = pos.down()).getBlock() != block)
+				return null;
+		return pos;
 	}
 	
 	public static boolean setLeaves(World world, BlockPos pos, BlockLivingLeaf leaves)

@@ -494,9 +494,9 @@ public class MoarWoods
 							seeds[i] = r.nextLong();
 					}
 					int total_energy;
-					TObjectIntHashMap<BlockPos.MutableBlockPos> energy_sources;
+					TObjectIntHashMap<BlockPos> energy_sources;
 					{
-						Pair<Integer, TObjectIntHashMap<BlockPos.MutableBlockPos>> pair = AbstractPlant.getTotalEnergy(world, pos, plant.getLeafSearchRadius(world, pos, height, seeds), height + plant.getLeafSearchExtraHeight(world, pos, height, seeds), plant.getLeafBlock());
+						Pair<Integer, TObjectIntHashMap<BlockPos>> pair = AbstractPlant.getTotalEnergy(world, pos, plant.getLeafSearchRadius(world, pos, height, seeds), height + plant.getLeafSearchExtraHeight(world, pos, height, seeds), plant.getLeafBlock());
 						total_energy = pair.getLeft();
 						energy_sources = pair.getRight();
 					}

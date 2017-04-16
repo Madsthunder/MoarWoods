@@ -3,13 +3,15 @@ package moarwoods.blocks;
 import java.util.List;
 import java.util.Random;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Preconditions;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
-import moarwoods.MoarWoods;
-import moarwoods.blocks.living.tree.AbstractPlant;
+import moarwoods.blocks.living.tree.IPlant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockNewLeaf;
+import net.minecraft.block.BlockOldLeaf;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -18,6 +20,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -28,19 +31,30 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockLivingLeaf extends BlockLeaves
 {
 	public static final PropertyInteger ENERGY = PropertyInteger.create("energy", 0, 7);
+	private final BlockLeaves baseBlock;
 	public final IBlockState baseState;
-	private int[] surroundings;
+	public final int searchArea;
+	private final int[][][] surroundings1;
 	
 	public BlockLivingLeaf(IBlockState baseState)
 	{
+		this(baseState, 4);
+	}
+	
+	public BlockLivingLeaf(IBlockState baseState, int searchArea)
+	{
 		this.setDefaultState(this.getDefaultState().withProperty(DECAYABLE, true).withProperty(ENERGY, 0));
+		Preconditions.checkArgument(baseState.getBlock() instanceof BlockLeaves, "'%s' must implement net.minecraft.block.BlockLeaves", baseState.getBlock());
+		this.baseBlock = (BlockLeaves)baseState.getBlock();
 		this.baseState = baseState;
+		this.searchArea = searchArea;
+		this.surroundings1 = new int[(searchArea * 2) + 1][(searchArea * 2) + 1][(searchArea * 2) + 1];
 	}
 	
 	@Override
 	public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
 	{
-		return Lists.newArrayList();
+		return NonNullList.withSize(1, new ItemStack(this, 1, this.baseState.getValue(this.baseBlock instanceof BlockOldLeaf ? BlockOldLeaf.VARIANT : BlockNewLeaf.VARIANT).getMetadata()));
 	}
 	
 	@Override
@@ -64,65 +78,56 @@ public class BlockLivingLeaf extends BlockLeaves
 	@Override
 	public void randomTick(World world, BlockPos pos, IBlockState state, Random random)
 	{
-        if (!world.isRemote)
+        if(!world.isRemote)
         {
             if(state.getValue(CHECK_DECAY) && state.getValue(DECAYABLE))
             {
-                this.surroundings = this.surroundings == null ? new int[32768] : this.surroundings;
-                if(world.isAreaLoaded(pos.add(-5, -5, -5), pos.add(5, 5, 5)))
+                if(world.isAreaLoaded(pos.add(-this.searchArea - 1, -this.searchArea - 1, -this.searchArea - 1), pos.add(this.searchArea + 1, this.searchArea + 1, this.searchArea + 1)))
                 {
-                    int x = pos.getX();
-                    int y = pos.getY();
-                    int z = pos.getZ();
-                    TObjectIntHashMap<BlockPos> markedtrees = new TObjectIntHashMap<BlockPos>();
-                    BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
-                    for(int x1 = -4; x1 <= 4; x1++)
-                        for(int y2 = -4; y2 <= 4; y2++)
-                            for(int y3 = -4; y3 <= 4; y3++)
+                    for(int x = 0; x <= this.searchArea * 2; x++)
+                        for(int y = 0; y <= this.searchArea * 2; y++)
+                            for(int z = 0; z <= this.searchArea * 2; z++)
                             {
-                                IBlockState iblockstate = world.getBlockState(blockpos$mutableblockpos.setPos(x + x1, y + y2, z + y3));
-                                Block block = iblockstate.getBlock();
+                            	int i;
+                                IBlockState state1 = world.getBlockState(pos.add(x - this.searchArea, y - this.searchArea, z - this.searchArea));
+                                Block block = state1.getBlock();
                                 if(block == this)
-                                {
-                                	this.surroundings[(x1 + 16) * 1024 + (y2 + 16) * 32 + y3 + 16] = -2;
-                                	continue;
-                                }
+                                	i = -2;
                                 else if(block instanceof BlockLivingLog)
                                 {
-                                	BlockLivingLog log = (BlockLivingLog)block;
-                                	if(log.getPlant() != null && log.getPlant().getLeafBlock() == this)
-                                	{
-                                    	BlockPos base = blockpos$mutableblockpos.toImmutable();
-                                    	while(world.getBlockState(base.down()).getBlock() == log)
-                                    		base = base.down();
-                                    	if(markedtrees.contains(base))
-                                    	{
-                                    		this.surroundings[(x1 + 16) * 1024 + (y2 + 16) * 32 + y3 + 16] = markedtrees.get(base);
-                                    		continue;
-                                    	}
-                                    	Byte seed = MoarWoods.getBlockHistory(world, base);
-                                    	IBlockState down = world.getBlockState(base.down());
-                                    	if(seed != null && down.getBlock().canSustainPlant(down, world, base.down(), EnumFacing.UP, MoarWoods.SAPLING))
-                                    	{
-                                    		long[] seeds = new long[3];
-                                    		{
-                                    			Random random1 = new Random(seed);
-                                    			for(int i = 0; i < seeds.length; i++)
-                                    				seeds[i] = random1.nextLong();
-                                    		}
-                                    		if(log.getPlant().getLeaves(world, base, AbstractPlant.getHeight(world, base, log), seeds).contains(pos))
-                                    		{
-                                    			markedtrees.put(base, 0);
-                                        		this.surroundings[(x1 + 16) * 1024 + (y2 + 16) * 32 + y3 + 16] = 0;
-                                        		continue;
-                                    		}
-                                		}
-                                		markedtrees.put(base, -1);
-                                	}
+                                	IPlant plant = ((BlockLivingLog)block).getPlant();
+                                	i = plant != null && plant.getLeafBlock() == this ? 4 : -1;
                                 }
-                                this.surroundings[(x1 + 16) * 1024 + (y2 + 16) * 32 + y3 + 16] = -1;
+                                else
+                                	i = -1;
+                        		this.surroundings1[x][y][z] = i;
                             }
-                    for(int i3 = 1; i3 <= 4; i3++)
+                    for(int i = 4; i >= 1; i--)
+                        for(int x = 0; x <= this.searchArea * 2; x++)
+                            for(int y = 0; y <= this.searchArea * 2; y++)
+                                for(int z = 0; z <= this.searchArea * 2; z++)
+                    				if(this.surroundings1[x][y][z] == i)
+                    				{
+                                        if(--x >= 0 && this.surroundings1[x][y][z] == -2)
+                                        	this.surroundings1[x][y][z] = i - 1;
+                                        x++;
+                                        if(this.surroundings1.length > ++x && this.surroundings1[x][y][z] == -2)
+                                        	this.surroundings1[x][y][z] = i - 1;
+                                        x--;
+                                        if(--y >= 0 && this.surroundings1[x][y][z] == -2)
+                                        	this.surroundings1[x][y][z] = i - 1;
+                                        y++;
+                                        if(this.surroundings1[x].length > ++y && this.surroundings1[x][y][z] == -2)
+                                        	this.surroundings1[x][y][z] = i - 1;
+                                        y--;
+                                        if(--z >= 0 && this.surroundings1[x][y][z] == -2)
+                                        	this.surroundings1[x][y][z] = i - 1;
+                                        z++;
+                                        if(this.surroundings1[x][y].length > ++z && this.surroundings1[x][y][z] == -2)
+                                        	this.surroundings1[x][y][z] = i - 1;
+                                        z--;
+                                    }
+                    /**for(int i3 = 1; i3 <= 4; i3++)
                         for(int x1 = -4; x1 <= 4; x1++)
                             for(int y1 = -4; y1 <= 4; y1++)
                                 for(int z1 = -4; z1 <= 4; ++z1)
@@ -140,9 +145,9 @@ public class BlockLivingLeaf extends BlockLeaves
                                             this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 + (z1 + 16 - 1)] = i3;
                                         if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 + z1 + 16 + 1] == -2)
                                             this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 + z1 + 16 + 1] = i3;
-                                    }
-                                }
-                if(this.surroundings[16912] >= 0)
+                                    }*/
+                    }
+                if(this.surroundings1[this.searchArea][this.searchArea][this.searchArea] >= 0)
                     world.setBlockState(pos, state = state.withProperty(CHECK_DECAY, false), 4);
                 else
                 {
@@ -180,6 +185,11 @@ public class BlockLivingLeaf extends BlockLeaves
 	{
 		return this.baseState.shouldSideBeRendered(access, pos, side);
 	}
+	
+    public int damageDropped(IBlockState state)
+    {
+        return this.baseState.getValue(this.baseBlock instanceof BlockOldLeaf ? BlockOldLeaf.VARIANT : BlockNewLeaf.VARIANT).getMetadata();
+    }
 	
 	@Override
 	protected BlockStateContainer createBlockState()
