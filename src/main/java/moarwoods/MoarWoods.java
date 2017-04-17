@@ -34,6 +34,7 @@ import net.minecraft.block.BlockNewLeaf;
 import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
+import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -480,19 +481,13 @@ public class MoarWoods
 		if(state.getBlock() instanceof BlockLivingLog)
 		{
 			BlockLivingLog block = (BlockLivingLog)state.getBlock();
-			if(!block.getPlant().grow(world, pos))
+			IPlant plant = block.getPlant();
+			if(plant != null && !plant.grow(world, pos) && AbstractPlant.isBase(world, pos, block))
 			{
-				Byte seed = MoarWoods.getBlockHistory(world, pos);
-				if(!world.isRemote && AbstractPlant.isBase(world, pos, block) && seed != null)
+				long[] seeds = plant.getSeeds(world, pos);
+				if(seeds != null)
 				{
-					IPlant plant = block.getPlant();
 					int height = AbstractPlant.getHeight(world, pos, block);
-					long[] seeds = new long[3];
-					{
-						Random r = new Random(seed);
-						for(int i = 0; i < seeds.length; i++)
-							seeds[i] = r.nextLong();
-					}
 					int total_energy;
 					TObjectIntHashMap<BlockPos> energy_sources;
 					{
@@ -560,69 +555,28 @@ public class MoarWoods
 			World world = event.getWorld();
 			BlockPos pos = event.getPos();
 			IBlockState state = world.getBlockState(pos);
-			if(state.getBlock() == Blocks.SAPLING)
+			Byte seed = getBlockHistory(world, pos.down());
+			if(state.getBlock() == Blocks.SAPLING && seed != null && checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
 			{
 				BlockPlanks.EnumType type = state.getValue(BlockSapling.TYPE);
-				event.setResult(Result.DENY);
+				IPlant plant;
 				switch(type)
 				{
-					case OAK:
-					{
-						if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
-						{
-							world.setBlockState(pos, LIVING_OAK_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
-							AbstractPlant.setLeaves(world, pos.up(), LIVING_OAK_LEAF);
-							Byte h = getBlockHistory(world, pos.down());
-							setBlockHistory(world, pos, Integer.valueOf(new Random(h).nextInt()).byteValue());
-							setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
-						}
-						break;
-					}
-					case SPRUCE:
-					{
-						if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
-						{
-							world.setBlockState(pos, LIVING_SPRUCE_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
-							AbstractPlant.setLeaves(world, pos.up(), LIVING_SPRUCE_LEAF);
-							setBlockHistory(world, pos, Integer.valueOf(new Random(getBlockHistory(world, pos.down())).nextInt(256) - 128).byteValue());
-							setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
-						}
-						break;
-					}
-					case BIRCH:
-					{
-						if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
-						{
-							world.setBlockState(pos, LIVING_BIRCH_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
-							AbstractPlant.setLeaves(world, pos.up(), LIVING_BIRCH_LEAF);
-							setBlockHistory(world, pos, Integer.valueOf(new Random(getBlockHistory(world, pos.down())).nextInt(256) - 128).byteValue());
-							setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
-						}
-						break;
-					}
-					case JUNGLE:
-					{
-						if(checkIfCanGrow(world, pos, 0) && checkIfCanGrow(world, pos.up(), 1))
-						{
-							world.setBlockState(pos, LIVING_JUNGLE_LOG.getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
-							AbstractPlant.setLeaves(world, pos.up(), LIVING_JUNGLE_LEAF);
-							setBlockHistory(world, pos, Integer.valueOf(new Random(getBlockHistory(world, pos.down())).nextInt(256) - 128).byteValue());
-							setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
-						}
-						break;
-					}
-					case ACACIA:
-					{
-						break;
-					}
-					case DARK_OAK:
-					{
-						break;
-					}
-					default:
-					{
-						event.setResult(Result.DEFAULT);
-					}
+					case OAK : plant = LIVING_OAK_LOG.getPlant(); break;
+					case SPRUCE : plant = LIVING_SPRUCE_LOG.getPlant(); break;
+					case BIRCH : plant = LIVING_BIRCH_LOG.getPlant(); break;
+					case JUNGLE : plant = LIVING_JUNGLE_LOG.getPlant(); break;
+					case ACACIA : plant = LIVING_ACACIA_LOG.getPlant(); break;
+					case DARK_OAK : plant = LIVING_DARKOAK_LOG.getPlant(); break;
+					default : plant = null;
+				}
+				if(plant != null)
+				{
+					event.setResult(Result.DENY);
+					world.setBlockState(pos, plant.getLogBlock().getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
+					AbstractPlant.setLeaves(world, pos.up(), plant.getLeafBlock());
+					setBlockHistory(world, pos, Integer.valueOf(new Random(seed).nextInt()).byteValue());
+					setBlockHistory(world, pos.down(), Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
 				}
 			}
 		}

@@ -1,7 +1,8 @@
 package moarwoods.blocks.living.tree;
 
-import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
@@ -14,6 +15,9 @@ public interface IPlant
 	public BlockLivingLog getLogBlock();
 	
 	public BlockLivingLeaf getLeafBlock();
+	
+	@Nullable
+	public long[] getSeeds(World world, BlockPos pos);
 	
 	public int getLeafSearchRadius(World world, BlockPos pos, int height, long[] seeds);
 	

@@ -57,29 +57,23 @@ public class BlockLivingLog extends BlockLog
 		random = new Random(random.nextLong());
 		if(this.plant == null)
 			return;
-			if(random.nextInt(14) == 0 && this.plant.grow(world, pos))
-				return;
-			else if(!AbstractPlant.hasBase(world, pos, this.plant.getLogBlock()) && world.getBlockState(pos.up()).getBlock() != this.plant.getLogBlock() && random.nextInt(6) == 0)
+		if(random.nextInt(14) == 0 && this.plant.grow(world, pos))
+			return;
+		else if(!AbstractPlant.hasBase(world, pos, this.plant.getLogBlock()) && world.getBlockState(pos.up()).getBlock() != this.plant.getLogBlock() && random.nextInt(6) == 0)
+		{
+			int death_stage = state.getValue(DEATH_STAGE);
+			if(death_stage >= 3)
 			{
-				int death_stage = state.getValue(DEATH_STAGE);
-				if(death_stage >= 3)
-				{
-					world.setBlockToAir(pos);
-					world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, SoundCategory.BLOCKS, 1F, 2F, false);
-				}
-				else
-					world.setBlockState(pos, state.withProperty(DEATH_STAGE, death_stage + 1));
+				world.setBlockToAir(pos);
+				world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, SoundCategory.BLOCKS, 1F, 2F, false);
 			}
-		Byte seed = MoarWoods.getBlockHistory(world, pos);
-		if(!world.isRemote && AbstractPlant.isBase(world, pos, this) && seed != null)
+			else
+				world.setBlockState(pos, state.withProperty(DEATH_STAGE, death_stage + 1));
+		}
+		long[] seeds;
+		if(AbstractPlant.isBase(world, pos, this) && (seeds = this.plant.getSeeds(world, pos)) != null)
 		{
 			int height = AbstractPlant.getHeight(world, pos, this);
-			long[] seeds = new long[3];
-			{
-				Random r = new Random(seed);
-				for(int i = 0; i < seeds.length; i++)
-					seeds[i] = r.nextLong();
-			}
 			BlockLivingLeaf leaf = this.plant.getLeafBlock();
 			int total_energy;
 			TObjectIntHashMap<BlockPos> energy_sources;
@@ -125,15 +119,9 @@ public class BlockLivingLog extends BlockLog
 												remove = false;
 												continue;
 											}
-											Byte seed1 = base1 == null ? null : MoarWoods.getBlockHistory(world, pos2);
-											if(seed1 != null)
+											long[] seeds1 = plant.getSeeds(world, pos2);
+											if(seeds1 != null)
 											{
-												long[] seeds1 = new long[3];
-												{
-													Random r = new Random(seed1);
-													for(int in = 0; in < seeds1.length; in++)
-														seeds1[in] = r.nextLong();
-												}
 												List<BlockPos> leaves1 = plant.getLeaves(world, base1, height, seeds1);
 												if(leaves1.contains(pos1))
 													remove = false;

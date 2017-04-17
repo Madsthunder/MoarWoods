@@ -23,10 +23,25 @@ import net.minecraft.block.BlockLog;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public abstract class AbstractPlant implements IPlant
 {
+	@Override
+	public long[] getSeeds(World world, BlockPos pos)
+	{
+		long[] seeds = null;
+		Byte seed;
+		if(!world.isRemote && (seed = MoarWoods.getBlockHistory(world, pos)) != null)
+		{
+			Random random = new Random(seed);
+			seeds = new long[3];
+			for(int i = 0; i < seeds.length; i++)
+				seeds[i] = random.nextLong();
+		}
+		return seeds;
+	}
 	
 	public abstract int getHeightLimit(World world, BlockPos pos, long[] seeds);
 	
@@ -81,19 +96,14 @@ public abstract class AbstractPlant implements IPlant
 	public boolean grow(World world, BlockPos pos)
 	{
 		IBlockState state = world.getBlockState(pos);
-		Byte seed = MoarWoods.getBlockHistory(world, pos);
-		if(!world.isRemote && seed != null)
+		// [0] is for height, [1] is for branches, [2] is for leaves
+		long[] seeds = this.getSeeds(world, pos);
+		if(seeds != null)
 		{
 			{
 				IBlockState down = world.getBlockState(pos.down());
 				if(!down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, MoarWoods.SAPLING))
 					return false;
-			}
-			// [0] is for height, [1] is for branches, [2] is for leaves.
-			long[] seeds;
-			{
-				Random random = new Random(seed);
-				seeds = new long[] { random.nextLong(), random.nextLong(), random.nextLong() };
 			}
 			int height_limit = this.getHeightLimit(world, pos, seeds);
 			int current_height = getHeight(world, pos, this.getLogBlock());
