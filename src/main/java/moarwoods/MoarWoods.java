@@ -200,12 +200,15 @@ public class MoarWoods
 						colors.registerBlockColorHandler(default_color, LIVING_DARKOAK_LOG);
 
 					}
-					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_OAK_LEAF);
-					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorPine(), LIVING_SPRUCE_LEAF);
-					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorBirch(), LIVING_BIRCH_LEAF);
-					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_JUNGLE_LEAF);
-					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_ACACIA_LEAF);
-					colors.registerBlockColorHandler((state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic(), LIVING_DARKOAK_LEAF);
+					{
+						IBlockColor default_color = (state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic();
+						colors.registerBlockColorHandler(default_color, LIVING_OAK_LEAF);
+						colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorPine(), LIVING_SPRUCE_LEAF);
+						colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorBirch(), LIVING_BIRCH_LEAF);
+						colors.registerBlockColorHandler(default_color, LIVING_JUNGLE_LEAF);
+						colors.registerBlockColorHandler(default_color, LIVING_ACACIA_LEAF);
+						colors.registerBlockColorHandler(default_color, LIVING_DARKOAK_LEAF);
+					}
 				}
 			}
 			
