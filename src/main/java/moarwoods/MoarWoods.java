@@ -1,6 +1,5 @@
 package moarwoods;
 
-import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -25,8 +24,10 @@ import moarwoods.blocks.living.tree.SmallOakTree;
 import moarwoods.blocks.living.tree.SmallSpruceTree;
 import moarwoods.capability.CapabilityFarmer;
 import moarwoods.client.renderers.entity.RenderVillagerWrapper;
+import moarwoods.command.CommandSetBiome;
 import moarwoods.entity.ai.EntityAIRunAroundLikeCrazyWrapper;
 import moarwoods.entity.ai.EntityAITameHorse;
+import moarwoods.packets.PacketUpdateBiomes;
 import moarwoods.villagers.VillagerFarmer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
@@ -34,7 +35,6 @@ import net.minecraft.block.BlockNewLeaf;
 import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
-import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -82,9 +82,12 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerCareer;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
@@ -125,9 +128,15 @@ public class MoarWoods
 	}
 	
 	@Mod.EventHandler
-	public void serverStopping(FMLServerAboutToStartEvent event)
+	public void serverAboutToStart(FMLServerAboutToStartEvent event)
 	{
 		BLOCK_HISTORY.clear();
+	}
+	
+	@Mod.EventHandler
+	public void serverStarting(FMLServerStartingEvent event)
+	{
+		event.registerServerCommand(new CommandSetBiome());
 	}
 	
 	@Mod.EventHandler
@@ -150,6 +159,7 @@ public class MoarWoods
 		{
 			VillagerFarmer.addItems(FARMER, FARMER.getCareer(0), Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.WHEAT, Items.BEETROOT, Items.POTATO, Items.POISONOUS_POTATO, Items.CARROT);
 			VillagerFarmer.addItems(FARMER, FARMER.getCareer(1), Items.FISH);
+			NETWORK_WRAPPER.registerMessage(PacketUpdateBiomes.Handler.class, PacketUpdateBiomes.class, 0, Side.CLIENT);
 		}
 		
 		public void init()
@@ -168,6 +178,7 @@ public class MoarWoods
 			@Override
 			public void pre()
 			{
+				super.pre();
 				ModelLoader.setCustomStateMapper(LIVING_OAK_LOG, createLogStateMapper());
 				ModelLoader.setCustomStateMapper(LIVING_SPRUCE_LOG, createLogStateMapper());
 				ModelLoader.setCustomStateMapper(LIVING_BIRCH_LOG, createLogStateMapper());
@@ -247,6 +258,8 @@ public class MoarWoods
 			
 		}
 	}
+	
+	public static final SimpleNetworkWrapper NETWORK_WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 	
 	@GameRegistry.ObjectHolder("minecraft:sapling")
 	public static final BlockSapling SAPLING = null;

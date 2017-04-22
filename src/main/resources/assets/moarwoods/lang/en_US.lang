@@ -21,3 +21,5 @@ item.dark_oak_stick.name=Dark Oak Stick
 
 entity.villager.guard=Guard
 entity.villager.soldier=Soldier
+
+commands.moarwoods:setbiome.usage=/setbiome <biome> <x1> <z1> <x2> <z2>
