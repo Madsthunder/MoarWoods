@@ -202,14 +202,18 @@ public class MoarWoods
 				{
 					BlockColors colors = Minecraft.getMinecraft().getBlockColors();
 					{
-						IBlockColor default_color = (state, access, pos, tintIndex) -> { int c = 195 + (20 * state.getValue(BlockLivingLog.DEATH_STAGE)); return (c * 65536) + 65280 + c;};
+						IBlockColor default_color = (state, access, pos, tintIndex) ->
+						{
+							int c = 195 + (20 * state.getValue(BlockLivingLog.DEATH_STAGE));
+							return (c * 65536) + 65280 + c;
+						};
 						colors.registerBlockColorHandler(default_color, LIVING_OAK_LOG);
 						colors.registerBlockColorHandler(default_color, LIVING_SPRUCE_LOG);
 						colors.registerBlockColorHandler(default_color, LIVING_BIRCH_LOG);
 						colors.registerBlockColorHandler(default_color, LIVING_JUNGLE_LOG);
 						colors.registerBlockColorHandler(default_color, LIVING_ACACIA_LOG);
 						colors.registerBlockColorHandler(default_color, LIVING_DARKOAK_LOG);
-
+						
 					}
 					{
 						IBlockColor default_color = (state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic();
@@ -529,7 +533,7 @@ public class MoarWoods
 		}
 		else if(state.getBlock() instanceof BlockLivingLeaf)
 		{
-			world.setBlockState(pos, state.withProperty(BlockLivingLeaf.ENERGY, Math.min(state.getValue(BlockLivingLeaf.ENERGY) + 1, 7)));
+			world.setBlockState(pos, ((BlockLivingLeaf)state.getBlock()).incrementEnergy(1, state, world, pos));
 			event.setResult(Result.ALLOW);
 		}
 	}
@@ -578,13 +582,26 @@ public class MoarWoods
 				IPlant plant;
 				switch(type)
 				{
-					case OAK : plant = LIVING_OAK_LOG.getPlant(); break;
-					case SPRUCE : plant = LIVING_SPRUCE_LOG.getPlant(); break;
-					case BIRCH : plant = LIVING_BIRCH_LOG.getPlant(); break;
-					case JUNGLE : plant = LIVING_JUNGLE_LOG.getPlant(); break;
-					case ACACIA : plant = LIVING_ACACIA_LOG.getPlant(); break;
-					case DARK_OAK : plant = LIVING_DARKOAK_LOG.getPlant(); break;
-					default : plant = null;
+					case OAK :
+						plant = LIVING_OAK_LOG.getPlant();
+						break;
+					case SPRUCE :
+						plant = LIVING_SPRUCE_LOG.getPlant();
+						break;
+					case BIRCH :
+						plant = LIVING_BIRCH_LOG.getPlant();
+						break;
+					case JUNGLE :
+						plant = LIVING_JUNGLE_LOG.getPlant();
+						break;
+					case ACACIA :
+						plant = LIVING_ACACIA_LOG.getPlant();
+						break;
+					case DARK_OAK :
+						plant = LIVING_DARKOAK_LOG.getPlant();
+						break;
+					default:
+						plant = null;
 				}
 				if(plant != null)
 				{

@@ -43,7 +43,7 @@ public class BlockLivingLeaf extends BlockLeaves
 	
 	public BlockLivingLeaf(IBlockState baseState, int searchArea)
 	{
-		this.setDefaultState(this.getDefaultState().withProperty(DECAYABLE, true).withProperty(ENERGY, 0));
+		this.setDefaultState(this.getDefaultState().withProperty(DECAYABLE, true));
 		Preconditions.checkArgument(baseState.getBlock() instanceof BlockLeaves, "'%s' must implement net.minecraft.block.BlockLeaves", baseState.getBlock());
 		this.baseBlock = (BlockLeaves)baseState.getBlock();
 		this.baseState = baseState;
@@ -78,91 +78,95 @@ public class BlockLivingLeaf extends BlockLeaves
 	@Override
 	public void randomTick(World world, BlockPos pos, IBlockState state, Random random)
 	{
-        if(!world.isRemote)
-        {
-            if(state.getValue(CHECK_DECAY) && state.getValue(DECAYABLE))
-            {
-                if(world.isAreaLoaded(pos.add(-this.searchArea - 1, -this.searchArea - 1, -this.searchArea - 1), pos.add(this.searchArea + 1, this.searchArea + 1, this.searchArea + 1)))
-                {
-                    for(int x = 0; x <= this.searchArea * 2; x++)
-                        for(int y = 0; y <= this.searchArea * 2; y++)
-                            for(int z = 0; z <= this.searchArea * 2; z++)
-                            {
-                            	int i;
-                                IBlockState state1 = world.getBlockState(pos.add(x - this.searchArea, y - this.searchArea, z - this.searchArea));
-                                Block block = state1.getBlock();
-                                if(block == this)
-                                	i = -2;
-                                else if(block instanceof BlockLivingLog)
-                                {
-                                	IPlant plant = ((BlockLivingLog)block).getPlant();
-                                	i = plant != null && plant.getLeafBlock() == this ? 4 : -1;
-                                }
-                                else
-                                	i = -1;
-                        		this.surroundings1[x][y][z] = i;
-                            }
-                    for(int i = 4; i >= 1; i--)
-                        for(int x = 0; x <= this.searchArea * 2; x++)
-                            for(int y = 0; y <= this.searchArea * 2; y++)
-                                for(int z = 0; z <= this.searchArea * 2; z++)
-                    				if(this.surroundings1[x][y][z] == i)
-                    				{
-                                        if(--x >= 0 && this.surroundings1[x][y][z] == -2)
-                                        	this.surroundings1[x][y][z] = i - 1;
-                                        x++;
-                                        if(this.surroundings1.length > ++x && this.surroundings1[x][y][z] == -2)
-                                        	this.surroundings1[x][y][z] = i - 1;
-                                        x--;
-                                        if(--y >= 0 && this.surroundings1[x][y][z] == -2)
-                                        	this.surroundings1[x][y][z] = i - 1;
-                                        y++;
-                                        if(this.surroundings1[x].length > ++y && this.surroundings1[x][y][z] == -2)
-                                        	this.surroundings1[x][y][z] = i - 1;
-                                        y--;
-                                        if(--z >= 0 && this.surroundings1[x][y][z] == -2)
-                                        	this.surroundings1[x][y][z] = i - 1;
-                                        z++;
-                                        if(this.surroundings1[x][y].length > ++z && this.surroundings1[x][y][z] == -2)
-                                        	this.surroundings1[x][y][z] = i - 1;
-                                        z--;
-                                    }
-                    /**for(int i3 = 1; i3 <= 4; i3++)
-                        for(int x1 = -4; x1 <= 4; x1++)
-                            for(int y1 = -4; y1 <= 4; y1++)
-                                for(int z1 = -4; z1 <= 4; ++z1)
-                                    if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 + z1 + 16] == i3 - 1)
-                                    {
-                                        if(this.surroundings[(x1 + 16 - 1) * 1024 + (y1 + 16) * 32 + z1 + 16] == -2)
-                                            this.surroundings[(x1 + 16 - 1) * 1024 + (y1 + 16) * 32 + z1 + 16] = i3;
-                                        if(this.surroundings[(x1 + 16 + 1) * 1024 + (y1 + 16) * 32 + z1 + 16] == -2)
-                                            this.surroundings[(x1 + 16 + 1) * 1024 + (y1 + 16) * 32 + z1 + 16] = i3;
-                                        if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16 - 1) * 32 + z1 + 16] == -2)
-                                            this.surroundings[(x1 + 16) * 1024 + (y1 + 16 - 1) * 32 + z1 + 16] = i3;
-                                        if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16 + 1) * 32 + z1 + 16] == -2)
-                                            this.surroundings[(x1 + 16) * 1024 + (y1 + 16 + 1) * 32 + z1 + 16] = i3;
-                                        if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 + (z1 + 16 - 1)] == -2)
-                                            this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 + (z1 + 16 - 1)] = i3;
-                                        if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 + z1 + 16 + 1] == -2)
-                                            this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 + z1 + 16 + 1] = i3;
-                                    }*/
-                    }
-                if(this.surroundings1[this.searchArea][this.searchArea][this.searchArea] >= 0)
-                    world.setBlockState(pos, state = state.withProperty(CHECK_DECAY, false), 4);
-                else
-                {
-                	this.dropBlockAsItem(world, pos, state, 0);
-                	world.setBlockToAir(pos);
-                	return;
-                }
-            }
-        }
-    
+		if(!world.isRemote)
+		{
+			if(state.getValue(CHECK_DECAY) && state.getValue(DECAYABLE))
+			{
+				if(world.isAreaLoaded(pos.add(-this.searchArea - 1, -this.searchArea - 1, -this.searchArea - 1), pos.add(this.searchArea + 1, this.searchArea + 1, this.searchArea + 1)))
+				{
+					for(int x = 0; x <= this.searchArea * 2; x++)
+						for(int y = 0; y <= this.searchArea * 2; y++)
+							for(int z = 0; z <= this.searchArea * 2; z++)
+							{
+								int i;
+								IBlockState state1 = world.getBlockState(pos.add(x - this.searchArea, y - this.searchArea, z - this.searchArea));
+								Block block = state1.getBlock();
+								if(block == this)
+									i = -2;
+								else if(block instanceof BlockLivingLog)
+								{
+									IPlant plant = ((BlockLivingLog)block).getPlant();
+									i = plant != null && plant.getLeafBlock() == this ? 4 : -1;
+								}
+								else
+									i = -1;
+								this.surroundings1[x][y][z] = i;
+							}
+					for(int i = 4; i >= 1; i--)
+						for(int x = 0; x <= this.searchArea * 2; x++)
+							for(int y = 0; y <= this.searchArea * 2; y++)
+								for(int z = 0; z <= this.searchArea * 2; z++)
+									if(this.surroundings1[x][y][z] == i)
+									{
+										if(--x >= 0 && this.surroundings1[x][y][z] == -2)
+											this.surroundings1[x][y][z] = i - 1;
+										x++;
+										if(this.surroundings1.length > ++x && this.surroundings1[x][y][z] == -2)
+											this.surroundings1[x][y][z] = i - 1;
+										x--;
+										if(--y >= 0 && this.surroundings1[x][y][z] == -2)
+											this.surroundings1[x][y][z] = i - 1;
+										y++;
+										if(this.surroundings1[x].length > ++y && this.surroundings1[x][y][z] == -2)
+											this.surroundings1[x][y][z] = i - 1;
+										y--;
+										if(--z >= 0 && this.surroundings1[x][y][z] == -2)
+											this.surroundings1[x][y][z] = i - 1;
+										z++;
+										if(this.surroundings1[x][y].length > ++z && this.surroundings1[x][y][z] == -2)
+											this.surroundings1[x][y][z] = i - 1;
+										z--;
+									}
+					/**
+					 * for(int i3 = 1; i3 <= 4; i3++) for(int x1 = -4; x1 <= 4;
+					 * x1++) for(int y1 = -4; y1 <= 4; y1++) for(int z1 = -4; z1
+					 * <= 4; ++z1) if(this.surroundings[(x1 + 16) * 1024 + (y1 +
+					 * 16) * 32 + z1 + 16] == i3 - 1) { if(this.surroundings[(x1
+					 * + 16 - 1) * 1024 + (y1 + 16) * 32 + z1 + 16] == -2)
+					 * this.surroundings[(x1 + 16 - 1) * 1024 + (y1 + 16) * 32 +
+					 * z1 + 16] = i3; if(this.surroundings[(x1 + 16 + 1) * 1024
+					 * + (y1 + 16) * 32 + z1 + 16] == -2) this.surroundings[(x1
+					 * + 16 + 1) * 1024 + (y1 + 16) * 32 + z1 + 16] = i3;
+					 * if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16 - 1) *
+					 * 32 + z1 + 16] == -2) this.surroundings[(x1 + 16) * 1024 +
+					 * (y1 + 16 - 1) * 32 + z1 + 16] = i3;
+					 * if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16 + 1) *
+					 * 32 + z1 + 16] == -2) this.surroundings[(x1 + 16) * 1024 +
+					 * (y1 + 16 + 1) * 32 + z1 + 16] = i3;
+					 * if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 +
+					 * (z1 + 16 - 1)] == -2) this.surroundings[(x1 + 16) * 1024
+					 * + (y1 + 16) * 32 + (z1 + 16 - 1)] = i3;
+					 * if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 +
+					 * z1 + 16 + 1] == -2) this.surroundings[(x1 + 16) * 1024 +
+					 * (y1 + 16) * 32 + z1 + 16 + 1] = i3; }
+					 */
+				}
+				if(this.surroundings1[this.searchArea][this.searchArea][this.searchArea] >= 0)
+					world.setBlockState(pos, state = state.withProperty(CHECK_DECAY, false), 4);
+				else
+				{
+					this.dropBlockAsItem(world, pos, state, 0);
+					world.setBlockToAir(pos);
+					return;
+				}
+			}
+		}
+		
 		if(!world.isRemote)
 		{
 			int skylight = world.getLightFor(EnumSkyBlock.SKY, pos);
 			int blocklight = world.getLightFor(EnumSkyBlock.BLOCK, pos);
-			world.setBlockState(pos, state.withProperty(ENERGY, Math.min(state.getValue(ENERGY) + (!world.isRaining() && 20 - skylight > 0 ? random.nextInt(20 - skylight) == 0 ? 1 : 0 : 1) + (30 - blocklight > 0 ? random.nextInt(30 - blocklight) == 0 ? 1 : 0 : 1), 7)));
+			world.setBlockState(pos, this.incrementEnergy((!world.isRaining() && 20 - skylight > 0 ? random.nextInt(20 - skylight) == 0 ? 1 : 0 : 1) + (30 - blocklight > 0 ? random.nextInt(30 - blocklight) == 0 ? 1 : 0 : 1), state, world, pos));
 		}
 	}
 	
@@ -186,10 +190,31 @@ public class BlockLivingLeaf extends BlockLeaves
 		return this.baseState.shouldSideBeRendered(access, pos, side);
 	}
 	
-    public int damageDropped(IBlockState state)
-    {
-        return this.baseState.getValue(this.baseBlock instanceof BlockOldLeaf ? BlockOldLeaf.VARIANT : BlockNewLeaf.VARIANT).getMetadata();
-    }
+	@Override
+	public int damageDropped(IBlockState state)
+	{
+		return this.baseState.getValue(this.baseBlock instanceof BlockOldLeaf ? BlockOldLeaf.VARIANT : BlockNewLeaf.VARIANT).getMetadata();
+	}
+	
+	public int getEnergy(IBlockState state, IBlockAccess access, BlockPos pos)
+	{
+		return state.getValue(ENERGY);
+	}
+	
+	public int getMaxEnergy(IBlockAccess access, BlockPos pos)
+	{
+		return 7;
+	}
+	
+	public IBlockState withEnergy(int energy, IBlockAccess access, BlockPos pos)
+	{
+		return this.getDefaultState().withProperty(ENERGY, Math.max(0, Math.min(this.getMaxEnergy(access, pos), energy)));
+	}
+	
+	public IBlockState incrementEnergy(int i, IBlockState state, IBlockAccess access, BlockPos pos)
+	{
+		return this.withEnergy(this.getEnergy(state, access, pos) + i, access, pos);
+	}
 	
 	@Override
 	protected BlockStateContainer createBlockState()

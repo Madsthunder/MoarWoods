@@ -183,7 +183,7 @@ public abstract class AbstractPlant implements IPlant
 		}
 		return false;
 	}
-
+	
 	public static Pair<Integer, TObjectIntHashMap<BlockPos>> getTotalEnergy(World world, BlockPos pos, int search_radius, int search_height, BlockLivingLeaf block)
 	{
 		TObjectIntHashMap<BlockPos> energy_map = new TObjectIntHashMap<BlockPos>();
@@ -196,7 +196,7 @@ public abstract class AbstractPlant implements IPlant
 					IBlockState state = world.getBlockState(pos1);
 					if(state.getBlock() == block)
 					{
-						int energy = state.getValue(BlockLivingLeaf.ENERGY);
+						int energy = ((BlockLivingLeaf)state.getBlock()).getEnergy(state, world, pos1);
 						totalenergy += energy;
 						energy_map.put(pos1, energy);
 					}
@@ -222,7 +222,7 @@ public abstract class AbstractPlant implements IPlant
 				tochange.put(pos, Math.max(0, new_energy));
 		}
 		for(BlockPos pos : tochange.keySet())
-			world.setBlockState(pos, block.getDefaultState().withProperty(BlockLivingLeaf.ENERGY, Math.min(7, tochange.get(pos))));
+			world.setBlockState(pos, block.withEnergy(tochange.get(pos), world, pos));
 	}
 	
 	public static boolean isBase(World world, BlockPos pos, BlockLivingLog block)
@@ -234,7 +234,7 @@ public abstract class AbstractPlant implements IPlant
 	public static int getHeight(World world, BlockPos pos, BlockLivingLog block)
 	{
 		int current_height = 0;
-		for(;;current_height++)
+		for(;; current_height++)
 			if(world.getBlockState(pos.up(current_height)).getBlock() != block)
 				break;
 		return current_height;
@@ -274,10 +274,11 @@ public abstract class AbstractPlant implements IPlant
 	public static boolean setLeaves(World world, BlockPos pos, IBlockState state, Predicate<Triple<IBlockState, World, BlockPos>> alternative)
 	{
 		Preconditions.checkArgument(state.getBlock() instanceof BlockLivingLeaf, "\'%s\' must be an instance of moarwoods.blocks.BlockLiveLeaves", state.getBlock().getRegistryName());
+		BlockLivingLeaf leaf = (BlockLivingLeaf)state.getBlock();
 		IBlockState state1 = world.getBlockState(pos);
 		if(state1.getBlock() == state.getBlock())
 		{
-			world.setBlockState(pos, state.withProperty(BlockLivingLeaf.ENERGY, Math.max(state.getValue(BlockLivingLeaf.ENERGY), state.getValue(BlockLivingLeaf.ENERGY))));
+			world.setBlockState(pos, leaf.withEnergy(Math.max(leaf.getEnergy(state, world, pos), ((BlockLivingLeaf)state1.getBlock()).getEnergy(state1, world, pos)), world, pos));
 			return true;
 		}
 		if(state1.getBlock().isAir(state1, world, pos) || alternative.apply(Triple.of(state1, world, pos)))
