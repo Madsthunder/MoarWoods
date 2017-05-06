@@ -1,6 +1,7 @@
 package moarwoods.client.models;
 
 import net.minecraft.client.model.ModelZombieVillager;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
@@ -27,5 +28,22 @@ public class ModelZombieVillagerArmorWrapper extends ModelZombieVillager
 		this.bipedRightArm.rotateAngleX = -0.75F;
 		this.bipedLeftArm.rotateAngleX = -0.75F;
 		copyModelAngles(this.bipedHead, this.bipedHeadwear);
+	}
+	
+	@Override
+	public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+	{
+		this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+		GlStateManager.pushMatrix();
+		if(entity.isSneaking())
+			GlStateManager.translate(0.0F, 0.2F, 0.0F);
+		this.bipedHead.render(scale);
+		this.bipedBody.render(scale);
+		this.bipedRightArm.render(scale);
+		this.bipedLeftArm.render(scale);
+		this.bipedRightLeg.render(scale);
+		this.bipedLeftLeg.render(scale);
+		this.bipedHeadwear.render(scale);
+		GlStateManager.popMatrix();
 	}
 }
