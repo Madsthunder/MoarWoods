@@ -3,15 +3,15 @@ package moarwoods.blocks;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Preconditions;
 
-import gnu.trove.map.hash.TObjectIntHashMap;
 import moarwoods.blocks.living.tree.IPlant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockNewLeaf;
 import net.minecraft.block.BlockOldLeaf;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockPlanks.EnumType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -39,6 +39,7 @@ public class BlockLivingLeaf extends BlockLeaves
 	public BlockLivingLeaf(IBlockState baseState)
 	{
 		this(baseState, 4);
+		this.setDefaultState(this.withEnergy(0, null, null));
 	}
 	
 	public BlockLivingLeaf(IBlockState baseState, int searchArea)
@@ -196,22 +197,22 @@ public class BlockLivingLeaf extends BlockLeaves
 		return this.baseState.getValue(this.baseBlock instanceof BlockOldLeaf ? BlockOldLeaf.VARIANT : BlockNewLeaf.VARIANT).getMetadata();
 	}
 	
-	public int getEnergy(IBlockState state, IBlockAccess access, BlockPos pos)
+	public int getEnergy(IBlockState state, @Nullable IBlockAccess access, @Nullable BlockPos pos)
 	{
 		return state.getValue(ENERGY);
 	}
 	
-	public int getMaxEnergy(IBlockAccess access, BlockPos pos)
+	public int getMaxEnergy(@Nullable IBlockAccess access, @Nullable BlockPos pos)
 	{
 		return 7;
 	}
 	
-	public IBlockState withEnergy(int energy, IBlockAccess access, BlockPos pos)
+	public IBlockState withEnergy(int energy, @Nullable IBlockAccess access, @Nullable BlockPos pos)
 	{
 		return this.getDefaultState().withProperty(ENERGY, Math.max(0, Math.min(this.getMaxEnergy(access, pos), energy)));
 	}
 	
-	public IBlockState incrementEnergy(int i, IBlockState state, IBlockAccess access, BlockPos pos)
+	public IBlockState incrementEnergy(int i, IBlockState state, @Nullable IBlockAccess access, @Nullable BlockPos pos)
 	{
 		return this.withEnergy(this.getEnergy(state, access, pos) + i, access, pos);
 	}
