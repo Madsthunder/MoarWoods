@@ -1,5 +1,6 @@
 package moarwoods;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -45,21 +46,32 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerVillagerArmor;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIHarvestFarmland;
 import net.minecraft.entity.ai.EntityAIMoveTowardsTarget;
 import net.minecraft.entity.ai.EntityAIRunAroundLikeCrazy;
 import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
-import net.minecraft.entity.monster.EntityZombieVillager;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.BannerPattern;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ColorizerFoliage;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeColorHelper;
@@ -344,13 +356,38 @@ public class MoarWoods
 	{
 		Entity entity = event.getEntity();
 		World world = event.getWorld();
-		if(entity instanceof EntityZombieVillager)
+		if(entity instanceof EntityZombie)
 		{
+			((EntityLivingBase)entity).setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
+			
 		}
 		if(entity instanceof EntityVillager)
 		{
-			((EntityVillager)entity).setItemStackToSlot(EntityEquipmentSlot.CHEST, new ItemStack(Items.DIAMOND_CHESTPLATE));
 			EntityVillager villager = (EntityVillager)entity;
+			NBTTagCompound display = new NBTTagCompound();
+			int color = new Color(255, 0, 0).getRGB();
+			ItemStack stack = new ItemStack(Items.LEATHER_HELMET);
+			stack.getOrCreateSubCompound("display").setInteger("color", color);
+			villager.setItemStackToSlot(EntityEquipmentSlot.HEAD, stack);
+			stack = new ItemStack(Items.LEATHER_CHESTPLATE);
+			stack.getOrCreateSubCompound("display").setInteger("color", color);
+			villager.setItemStackToSlot(EntityEquipmentSlot.CHEST, stack);
+			stack = new ItemStack(Items.LEATHER_LEGGINGS);
+			stack.getOrCreateSubCompound("display").setInteger("color", color);
+			villager.setItemStackToSlot(EntityEquipmentSlot.LEGS, stack);
+			stack = new ItemStack(Items.LEATHER_BOOTS);
+			stack.getOrCreateSubCompound("display").setInteger("color", color);
+			villager.setItemStackToSlot(EntityEquipmentSlot.FEET, stack);
+			villager.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+			stack = new ItemStack(Items.SHIELD, 1, 0);
+			NBTTagList patterns = new NBTTagList();
+			NBTTagCompound pattern = new NBTTagCompound();
+			pattern.setString("Pattern", BannerPattern.SKULL.getHashname());
+			pattern.setInteger("Color", color);
+			patterns.appendTag(pattern);
+			stack.getOrCreateSubCompound("BlockEntityTag").setInteger("Base", 15 - EnumDyeColor.CYAN.getMetadata());
+			stack.getOrCreateSubCompound("BlockEntityTag").setTag("Patterns", patterns);
+			villager.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, stack);
 			EntityAITasks tasks = villager.tasks;
 			for(EntityAITaskEntry entry : Sets.newHashSet(tasks.taskEntries))
 				if(entry.action.getClass() == EntityAIHarvestFarmland.class)
@@ -361,6 +398,23 @@ public class MoarWoods
 				@Override
 				public boolean shouldExecute()
 				{
+					villager.setActiveHand(EnumHand.MAIN_HAND);
+					if(villager.getActiveItemStack().getMaxItemUseDuration() - villager.getItemInUseCount() >= 30 && !world.playerEntities.isEmpty())
+					{
+						EntityPlayer player = world.playerEntities.get(0);
+						if(player != null)
+						{
+							EntityArrow arrow = new EntityTippedArrow(villager.world, villager);
+							double d0 = player.posX - villager.posX;
+							double d1 = player.getEntityBoundingBox().minY + player.height / 3.0F - arrow.posY;
+							double d2 = player.posZ - villager.posZ;
+							double d3 = MathHelper.sqrt(d0 * d0 + d2 * d2);
+							arrow.setThrowableHeading(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, 14 - villager.world.getDifficulty().getDifficultyId() * 4);
+							villager.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (villager.getRNG().nextFloat() * 0.4F + 0.8F));
+							villager.world.spawnEntity(arrow);
+							villager.resetActiveHand();
+						}
+					}
 					if(super.shouldExecute())
 					{
 						try
