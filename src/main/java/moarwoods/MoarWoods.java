@@ -556,7 +556,7 @@ public class MoarWoods
 		{
 			BlockLivingLog block = (BlockLivingLog)state.getBlock();
 			IPlant plant = block.getPlant();
-			if(plant != null && !plant.grow(world, pos) && AbstractPlant.isBase(world, pos, block))
+			if(plant != null && !plant.grow(world, pos, false) && AbstractPlant.isBase(world, pos, block))
 			{
 				long[] seeds = plant.getSeeds(world, pos);
 				if(seeds != null)

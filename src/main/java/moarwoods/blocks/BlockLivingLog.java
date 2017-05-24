@@ -57,7 +57,7 @@ public class BlockLivingLog extends BlockLog
 		random = new Random(random.nextLong());
 		if(this.plant == null)
 			return;
-		if(random.nextInt(14) == 0 && this.plant.grow(world, pos))
+		if(random.nextInt(14) == 0 && this.plant.grow(world, pos, true))
 			return;
 		else if(!AbstractPlant.hasBase(world, pos, this.plant.getLogBlock()) && world.getBlockState(pos.up()).getBlock() != this.plant.getLogBlock() && random.nextInt(6) == 0)
 		{

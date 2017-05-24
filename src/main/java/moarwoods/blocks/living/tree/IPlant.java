@@ -27,5 +27,5 @@ public interface IPlant
 	
 	public List<IPlantBranch> getBranches(World world, BlockPos pos, int height, long[] seeds);
 	
-	public boolean grow(World world, BlockPos pos);
+	public boolean grow(World world, BlockPos pos, boolean update_logs);
 }

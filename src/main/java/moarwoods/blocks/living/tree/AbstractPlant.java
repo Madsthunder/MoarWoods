@@ -93,7 +93,7 @@ public abstract class AbstractPlant implements IPlant
 	}
 	
 	@Override
-	public boolean grow(World world, BlockPos pos)
+	public boolean grow(World world, BlockPos pos, boolean update_logs)
 	{
 		IBlockState state = world.getBlockState(pos);
 		// [0] is for height, [1] is for branches, [2] is for leaves
@@ -109,17 +109,20 @@ public abstract class AbstractPlant implements IPlant
 			int current_height = getHeight(world, pos, this.getLogBlock());
 			if(current_height > height_limit)
 			{
-				BlockPos pos1 = pos.up(current_height - 1);
-				IBlockState state1 = world.getBlockState(pos1);
-				int stage = state1.getValue(BlockLivingLog.DEATH_STAGE);
-				if(stage >= 3)
+				if(update_logs)
 				{
-					world.setBlockToAir(pos1);
-					this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
-				}
-				else
-				{
-					world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DEATH_STAGE, stage + 1));
+					BlockPos pos1 = pos.up(current_height - 1);
+					IBlockState state1 = world.getBlockState(pos1);
+					int stage = state1.getValue(BlockLivingLog.DEATH_STAGE);
+					if(stage >= 3)
+					{
+						world.setBlockToAir(pos1);
+						this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
+					}
+					else
+					{
+						world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DEATH_STAGE, stage + 1));
+					}
 				}
 				return false;
 			}
@@ -132,17 +135,20 @@ public abstract class AbstractPlant implements IPlant
 			}
 			if(this.getRequiredEnergyForGrowth(world, pos, current_height) > total_energy)
 			{
-				BlockPos pos1 = pos.up(current_height - 1);
-				IBlockState state1 = world.getBlockState(pos1);
-				int stage = state1.getValue(BlockLivingLog.DEATH_STAGE);
-				if(stage >= 3)
+				if(update_logs)
 				{
-					world.setBlockToAir(pos1);
-					this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
-				}
-				else
-				{
-					world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DEATH_STAGE, stage + 1));
+					BlockPos pos1 = pos.up(current_height - 1);
+					IBlockState state1 = world.getBlockState(pos1);
+					int stage = state1.getValue(BlockLivingLog.DEATH_STAGE);
+					if(stage >= 3)
+					{
+						world.setBlockToAir(pos1);
+						this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
+					}
+					else
+					{
+						world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DEATH_STAGE, stage + 1));
+					}
 				}
 				return false;
 			}
