@@ -24,13 +24,13 @@ public class SmallOakTree extends AbstractPlant
 	@Override
 	public BlockLivingLog getLogBlock()
 	{
-		return ObjectReferences.LIVING_OAK_LOG;
+		return ObjectReferences.OAK_TREE_SMALL_TRUNK;
 	}
 	
 	@Override
 	public BlockLivingLeaf getLeafBlock()
 	{
-		return ObjectReferences.LIVING_OAK_LEAF;
+		return ObjectReferences.OAK_TREE_SMALL_LEAVES;
 	}
 	
 	@Override

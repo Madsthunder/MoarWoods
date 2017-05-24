@@ -15,13 +15,13 @@ public class SmallJungleTree extends SmallOakTree
 	@Override
 	public BlockLivingLog getLogBlock()
 	{
-		return ObjectReferences.LIVING_JUNGLE_LOG;
+		return ObjectReferences.JUNGLE_TREE_SMALL_TRUNK;
 	}
 	
 	@Override
 	public BlockLivingLeaf getLeafBlock()
 	{
-		return ObjectReferences.LIVING_JUNGLE_LEAF;
+		return ObjectReferences.JUNGLE_TREE_SMALL_LEAVES;
 	}
 	
 	@Override

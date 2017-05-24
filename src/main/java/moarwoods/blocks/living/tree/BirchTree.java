@@ -16,13 +16,13 @@ public class BirchTree extends SmallOakTree
 	@Override
 	public BlockLivingLog getLogBlock()
 	{
-		return ObjectReferences.LIVING_BIRCH_LOG;
+		return ObjectReferences.BIRCH_TREE_SMALL_TRUNK;
 	}
 
 	@Override
 	public BlockLivingLeaf getLeafBlock()
 	{
-		return ObjectReferences.LIVING_BIRCH_LEAF;
+		return ObjectReferences.BIRCH_TREE_SMALL_LEAVES;
 	}
 	
 	@Override

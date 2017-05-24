@@ -17,6 +17,7 @@ import com.google.common.collect.Sets;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
+import moarwoods.blocks.BlockLivingQuarterLog;
 import moarwoods.blocks.living.tree.AbstractPlant;
 import moarwoods.blocks.living.tree.BirchTree;
 import moarwoods.blocks.living.tree.IPlant;
@@ -191,18 +192,18 @@ public class MoarWoods
 			public void pre()
 			{
 				super.pre();
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_OAK_LOG, createLogStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_SPRUCE_LOG, createLogStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_BIRCH_LOG, createLogStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_JUNGLE_LOG, createLogStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_ACACIA_LOG, createLogStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_DARKOAK_LOG, createLogStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_OAK_LEAF, createLeafStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_SPRUCE_LEAF, createLeafStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_BIRCH_LEAF, createLeafStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_JUNGLE_LEAF, createLeafStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_ACACIA_LEAF, createLeafStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.LIVING_DARKOAK_LEAF, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.OAK_TREE_SMALL_TRUNK, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.SPRUCE_TREE_SMALL_TRUNK, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.BIRCH_TREE_SMALL_TRUNK, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.JUNGLE_TREE_SMALL_TRUNK, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.ACACIA_TREE_SMALL_TRUNK, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.DARKOAK_TREE_LARGE_TRUNK, createLogStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.OAK_TREE_SMALL_LEAVES, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.SPRUCE_TREE_SMALL_LEAVES, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.BIRCH_TREE_SMALL_LEAVES, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.JUNGLE_TREE_SMALL_LEAVES, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.ACACIA_TREE_SMALL_LEAVES, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.DARKOAK_TREE_SMALL_LEAVES, createLeafStateMapper());
 			}
 			
 			@Override
@@ -219,22 +220,22 @@ public class MoarWoods
 							int c = 195 + (20 * state.getValue(BlockLivingLog.DEATH_STAGE));
 							return (c * 65536) + 65280 + c;
 						};
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_OAK_LOG);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_SPRUCE_LOG);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_BIRCH_LOG);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_JUNGLE_LOG);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_ACACIA_LOG);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_DARKOAK_LOG);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.OAK_TREE_SMALL_TRUNK);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.SPRUCE_TREE_SMALL_TRUNK);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.BIRCH_TREE_SMALL_TRUNK);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.JUNGLE_TREE_SMALL_TRUNK);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.ACACIA_TREE_SMALL_TRUNK);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.DARKOAK_TREE_LARGE_TRUNK);
 						
 					}
 					{
 						IBlockColor default_color = (state, access, pos, tintIndex) -> access != null && pos != null ? BiomeColorHelper.getFoliageColorAtPos(access, pos) : ColorizerFoliage.getFoliageColorBasic();
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_OAK_LEAF);
-						colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorPine(), ObjectReferences.LIVING_SPRUCE_LEAF);
-						colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorBirch(), ObjectReferences.LIVING_BIRCH_LEAF);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_JUNGLE_LEAF);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_ACACIA_LEAF);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.LIVING_DARKOAK_LEAF);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.OAK_TREE_SMALL_LEAVES);
+						colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorPine(), ObjectReferences.SPRUCE_TREE_SMALL_LEAVES);
+						colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorBirch(), ObjectReferences.BIRCH_TREE_SMALL_LEAVES);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.JUNGLE_TREE_SMALL_LEAVES);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.ACACIA_TREE_SMALL_LEAVES);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.DARKOAK_TREE_SMALL_LEAVES);
 					}
 				}
 			}
@@ -283,18 +284,18 @@ public class MoarWoods
 
 		@GameRegistry.ObjectHolder("minecraft:sapling")
 		public static final BlockSapling SAPLING = null;
-		public static final BlockLivingLog LIVING_OAK_LOG = null;
-		public static final BlockLivingLog LIVING_SPRUCE_LOG = null;
-		public static final BlockLivingLog LIVING_BIRCH_LOG = null;
-		public static final BlockLivingLog LIVING_JUNGLE_LOG = null;
-		public static final BlockLivingLog LIVING_ACACIA_LOG = null;
-		public static final BlockLivingLog LIVING_DARKOAK_LOG = null;
-		public static final BlockLivingLeaf LIVING_OAK_LEAF = null;
-		public static final BlockLivingLeaf LIVING_SPRUCE_LEAF = null;
-		public static final BlockLivingLeaf LIVING_BIRCH_LEAF = null;
-		public static final BlockLivingLeaf LIVING_JUNGLE_LEAF = null;
-		public static final BlockLivingLeaf LIVING_ACACIA_LEAF = null;
-		public static final BlockLivingLeaf LIVING_DARKOAK_LEAF = null;
+		public static final BlockLivingLog OAK_TREE_SMALL_TRUNK = null;
+		public static final BlockLivingLog SPRUCE_TREE_SMALL_TRUNK = null;
+		public static final BlockLivingLog BIRCH_TREE_SMALL_TRUNK = null;
+		public static final BlockLivingLog JUNGLE_TREE_SMALL_TRUNK = null;
+		public static final BlockLivingLog ACACIA_TREE_SMALL_TRUNK = null;
+		public static final BlockLivingLog DARKOAK_TREE_LARGE_TRUNK = null;
+		public static final BlockLivingLeaf OAK_TREE_SMALL_LEAVES = null;
+		public static final BlockLivingLeaf SPRUCE_TREE_SMALL_LEAVES = null;
+		public static final BlockLivingLeaf BIRCH_TREE_SMALL_LEAVES = null;
+		public static final BlockLivingLeaf JUNGLE_TREE_SMALL_LEAVES = null;
+		public static final BlockLivingLeaf ACACIA_TREE_SMALL_LEAVES = null;
+		public static final BlockLivingLeaf DARKOAK_TREE_SMALL_LEAVES = null;
 		
 	}
 	@GameRegistry.ObjectHolder("minecraft:farmer")
@@ -308,12 +309,13 @@ public class MoarWoods
 	{
 		List<Block> blocks = Lists.newArrayList();
 		{
-			blocks.add(new BlockLivingLog(new SmallOakTree()).setRegistryName("moarwoods:living_oak_log"));
-			blocks.add(new BlockLivingLog(new SmallSpruceTree()).setRegistryName("moarwoods:living_spruce_log"));
-			blocks.add(new BlockLivingLog(new BirchTree()).setRegistryName("moarwoods:living_birch_log"));
-			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:living_jungle_log"));
-			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:living_acacia_log"));
-			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:living_darkoak_log"));
+			blocks.add(new BlockLivingLog(new SmallOakTree()).setRegistryName("moarwoods:oak_tree_small_trunk"));
+			blocks.add(new BlockLivingLog(new SmallSpruceTree()).setRegistryName("moarwoods:spruce_tree_log_trunk"));
+			blocks.add(new BlockLivingLog(new BirchTree()).setRegistryName("moarwoods:birch_tree_small_trunk"));
+			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:jungle_tree_small_trunk"));
+			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:jungle_tree_large_trunk_quarter"));
+			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:acacia_tree_small_trunk"));
+			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:darkoak_tree_large_trunk_quarter"));
 		}
 		{
 			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK)).setRegistryName("moarwoods:living_oak_leaf"));
@@ -630,22 +632,22 @@ public class MoarWoods
 				switch(type)
 				{
 					case OAK :
-						plant = ObjectReferences.LIVING_OAK_LOG.getPlant();
+						plant = ObjectReferences.OAK_TREE_SMALL_TRUNK.getPlant();
 						break;
 					case SPRUCE :
-						plant = ObjectReferences.LIVING_SPRUCE_LOG.getPlant();
+						plant = ObjectReferences.SPRUCE_TREE_SMALL_TRUNK.getPlant();
 						break;
 					case BIRCH :
-						plant = ObjectReferences.LIVING_BIRCH_LOG.getPlant();
+						plant = ObjectReferences.BIRCH_TREE_SMALL_TRUNK.getPlant();
 						break;
 					case JUNGLE :
-						plant = ObjectReferences.LIVING_JUNGLE_LOG.getPlant();
+						plant = ObjectReferences.JUNGLE_TREE_SMALL_TRUNK.getPlant();
 						break;
 					case ACACIA :
-						plant = ObjectReferences.LIVING_ACACIA_LOG.getPlant();
+						plant = ObjectReferences.ACACIA_TREE_SMALL_TRUNK.getPlant();
 						break;
 					case DARK_OAK :
-						plant = ObjectReferences.LIVING_DARKOAK_LOG.getPlant();
+						plant = ObjectReferences.DARKOAK_TREE_LARGE_TRUNK.getPlant();
 						break;
 					default:
 						plant = null;

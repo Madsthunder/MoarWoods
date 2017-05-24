@@ -27,13 +27,13 @@ public class SmallSpruceTree extends AbstractPlant
 	@Override
 	public BlockLivingLog getLogBlock()
 	{
-		return ObjectReferences.LIVING_SPRUCE_LOG;
+		return ObjectReferences.SPRUCE_TREE_SMALL_TRUNK;
 	}
 
 	@Override
 	public BlockLivingLeaf getLeafBlock()
 	{
-		return ObjectReferences.LIVING_SPRUCE_LEAF;
+		return ObjectReferences.SPRUCE_TREE_SMALL_LEAVES;
 	}
 
 	@Override
