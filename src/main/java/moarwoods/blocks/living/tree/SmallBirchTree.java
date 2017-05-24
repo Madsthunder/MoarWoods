@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
-public class BirchTree extends SmallOakTree
+public class SmallBirchTree extends SmallOakTree
 {
 
 	@Override

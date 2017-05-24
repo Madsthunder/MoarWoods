@@ -19,7 +19,7 @@ import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
 import moarwoods.blocks.BlockLivingQuarterLog;
 import moarwoods.blocks.living.tree.AbstractPlant;
-import moarwoods.blocks.living.tree.BirchTree;
+import moarwoods.blocks.living.tree.SmallBirchTree;
 import moarwoods.blocks.living.tree.IPlant;
 import moarwoods.blocks.living.tree.SmallJungleTree;
 import moarwoods.blocks.living.tree.SmallOakTree;
@@ -311,7 +311,7 @@ public class MoarWoods
 		{
 			blocks.add(new BlockLivingLog(new SmallOakTree()).setRegistryName("moarwoods:oak_tree_small_trunk"));
 			blocks.add(new BlockLivingLog(new SmallSpruceTree()).setRegistryName("moarwoods:spruce_tree_log_trunk"));
-			blocks.add(new BlockLivingLog(new BirchTree()).setRegistryName("moarwoods:birch_tree_small_trunk"));
+			blocks.add(new BlockLivingLog(new SmallBirchTree()).setRegistryName("moarwoods:birch_tree_small_trunk"));
 			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:jungle_tree_small_trunk"));
 			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:acacia_tree_small_trunk"));
 			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:darkoak_tree_large_trunk"));
