@@ -203,7 +203,7 @@ public class MoarWoods
 				ModelLoader.setCustomStateMapper(ObjectReferences.BIRCH_TREE_SMALL_LEAVES, createLeafStateMapper());
 				ModelLoader.setCustomStateMapper(ObjectReferences.JUNGLE_TREE_SMALL_LEAVES, createLeafStateMapper());
 				ModelLoader.setCustomStateMapper(ObjectReferences.ACACIA_TREE_SMALL_LEAVES, createLeafStateMapper());
-				ModelLoader.setCustomStateMapper(ObjectReferences.DARKOAK_TREE_SMALL_LEAVES, createLeafStateMapper());
+				ModelLoader.setCustomStateMapper(ObjectReferences.DARKOAK_TREE_LARGE_LEAVES, createLeafStateMapper());
 			}
 			
 			@Override
@@ -235,7 +235,7 @@ public class MoarWoods
 						colors.registerBlockColorHandler((state, access, pos, tintIndex) -> ColorizerFoliage.getFoliageColorBirch(), ObjectReferences.BIRCH_TREE_SMALL_LEAVES);
 						colors.registerBlockColorHandler(default_color, ObjectReferences.JUNGLE_TREE_SMALL_LEAVES);
 						colors.registerBlockColorHandler(default_color, ObjectReferences.ACACIA_TREE_SMALL_LEAVES);
-						colors.registerBlockColorHandler(default_color, ObjectReferences.DARKOAK_TREE_SMALL_LEAVES);
+						colors.registerBlockColorHandler(default_color, ObjectReferences.DARKOAK_TREE_LARGE_LEAVES);
 					}
 				}
 			}
@@ -295,7 +295,7 @@ public class MoarWoods
 		public static final BlockLivingLeaf BIRCH_TREE_SMALL_LEAVES = null;
 		public static final BlockLivingLeaf JUNGLE_TREE_SMALL_LEAVES = null;
 		public static final BlockLivingLeaf ACACIA_TREE_SMALL_LEAVES = null;
-		public static final BlockLivingLeaf DARKOAK_TREE_SMALL_LEAVES = null;
+		public static final BlockLivingLeaf DARKOAK_TREE_LARGE_LEAVES = null;
 		
 	}
 	@GameRegistry.ObjectHolder("minecraft:farmer")
@@ -313,17 +313,16 @@ public class MoarWoods
 			blocks.add(new BlockLivingLog(new SmallSpruceTree()).setRegistryName("moarwoods:spruce_tree_log_trunk"));
 			blocks.add(new BlockLivingLog(new BirchTree()).setRegistryName("moarwoods:birch_tree_small_trunk"));
 			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:jungle_tree_small_trunk"));
-			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:jungle_tree_large_trunk_quarter"));
 			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:acacia_tree_small_trunk"));
-			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:darkoak_tree_large_trunk_quarter"));
+			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:darkoak_tree_large_trunk"));
 		}
 		{
-			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK)).setRegistryName("moarwoods:living_oak_leaf"));
-			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.SPRUCE)).setRegistryName("moarwoods:living_spruce_leaf"));
-			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.BIRCH)).setRegistryName("moarwoods:living_birch_leaf"));
-			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)).setRegistryName("moarwoods:living_jungle_leaf"));
-			blocks.add(new BlockLivingLeaf(Blocks.LEAVES2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)).setRegistryName("moarwoods:living_acacia_leaf"));
-			blocks.add(new BlockLivingLeaf(Blocks.LEAVES2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)).setRegistryName("moarwoods:living_darkoak_leaf"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.OAK)).setRegistryName("moarwoods:oak_tree_small_leaves"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.SPRUCE)).setRegistryName("moarwoods:spruce_tree_small_leaves"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.BIRCH)).setRegistryName("moarwoods:birch_tree_small_leaves"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE)).setRegistryName("moarwoods:jungle_tree_small_leaves"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.ACACIA)).setRegistryName("moarwoods:acacia_tree_small_leaves"));
+			blocks.add(new BlockLivingLeaf(Blocks.LEAVES2.getDefaultState().withProperty(BlockNewLeaf.VARIANT, BlockPlanks.EnumType.DARK_OAK)).setRegistryName("moarwoods:darkoak_tree_large_leaves"));
 		}
 		event.getRegistry().registerAll(Iterables.toArray(blocks, Block.class));
 	}
