@@ -16,6 +16,7 @@ import com.google.common.collect.Maps;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 import moarwoods.MoarWoods;
+import moarwoods.MoarWoods.ObjectReferences;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
 import net.minecraft.block.BlockLeaves;
@@ -102,7 +103,7 @@ public abstract class AbstractPlant implements IPlant
 		{
 			{
 				IBlockState down = world.getBlockState(pos.down());
-				if(!down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, MoarWoods.SAPLING))
+				if(!down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, ObjectReferences.SAPLING))
 					return false;
 			}
 			int height_limit = this.getHeightLimit(world, pos, seeds);
@@ -234,7 +235,7 @@ public abstract class AbstractPlant implements IPlant
 	public static boolean isBase(World world, BlockPos pos, BlockLivingLog block)
 	{
 		IBlockState down = world.getBlockState(pos.down());
-		return down.getBlock() != block && down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, MoarWoods.SAPLING);
+		return down.getBlock() != block && down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, ObjectReferences.SAPLING);
 	}
 	
 	public static int getHeight(World world, BlockPos pos, BlockLivingLog block)

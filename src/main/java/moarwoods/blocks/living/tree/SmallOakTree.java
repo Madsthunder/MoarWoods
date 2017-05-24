@@ -10,7 +10,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
-import moarwoods.MoarWoods;
+import moarwoods.MoarWoods.ObjectReferences;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
 import net.minecraft.util.EnumFacing;
@@ -24,13 +24,13 @@ public class SmallOakTree extends AbstractPlant
 	@Override
 	public BlockLivingLog getLogBlock()
 	{
-		return MoarWoods.LIVING_OAK_LOG;
+		return ObjectReferences.LIVING_OAK_LOG;
 	}
 	
 	@Override
 	public BlockLivingLeaf getLeafBlock()
 	{
-		return MoarWoods.LIVING_OAK_LEAF;
+		return ObjectReferences.LIVING_OAK_LEAF;
 	}
 	
 	@Override

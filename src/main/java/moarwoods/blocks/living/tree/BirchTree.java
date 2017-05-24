@@ -2,7 +2,7 @@ package moarwoods.blocks.living.tree;
 
 import java.util.Random;
 
-import moarwoods.MoarWoods;
+import moarwoods.MoarWoods.ObjectReferences;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
 import net.minecraft.init.Biomes;
@@ -16,13 +16,13 @@ public class BirchTree extends SmallOakTree
 	@Override
 	public BlockLivingLog getLogBlock()
 	{
-		return MoarWoods.LIVING_BIRCH_LOG;
+		return ObjectReferences.LIVING_BIRCH_LOG;
 	}
 
 	@Override
 	public BlockLivingLeaf getLeafBlock()
 	{
-		return MoarWoods.LIVING_BIRCH_LEAF;
+		return ObjectReferences.LIVING_BIRCH_LEAF;
 	}
 	
 	@Override

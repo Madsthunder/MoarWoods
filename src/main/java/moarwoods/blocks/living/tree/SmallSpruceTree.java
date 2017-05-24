@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
-import moarwoods.MoarWoods;
+import moarwoods.MoarWoods.ObjectReferences;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
 import net.minecraft.block.BlockLeaves;
@@ -27,13 +27,13 @@ public class SmallSpruceTree extends AbstractPlant
 	@Override
 	public BlockLivingLog getLogBlock()
 	{
-		return MoarWoods.LIVING_SPRUCE_LOG;
+		return ObjectReferences.LIVING_SPRUCE_LOG;
 	}
 
 	@Override
 	public BlockLivingLeaf getLeafBlock()
 	{
-		return MoarWoods.LIVING_SPRUCE_LEAF;
+		return ObjectReferences.LIVING_SPRUCE_LEAF;
 	}
 
 	@Override
