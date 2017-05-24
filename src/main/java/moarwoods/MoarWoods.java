@@ -71,7 +71,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ColorizerFoliage;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeColorHelper;
@@ -101,6 +100,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerCareer;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -108,6 +108,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @EventBusSubscriber
+@ObjectHolder(MoarWoods.MODID)
 @Mod(modid = MoarWoods.MODID, name = MoarWoods.NAME, version = MoarWoods.NAME)
 public class MoarWoods
 {
@@ -279,29 +280,17 @@ public class MoarWoods
 	
 	@GameRegistry.ObjectHolder("minecraft:sapling")
 	public static final BlockSapling SAPLING = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_oak_log")
 	public static final BlockLivingLog LIVING_OAK_LOG = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_spruce_log")
 	public static final BlockLivingLog LIVING_SPRUCE_LOG = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_birch_log")
 	public static final BlockLivingLog LIVING_BIRCH_LOG = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_jungle_log")
 	public static final BlockLivingLog LIVING_JUNGLE_LOG = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_acacia_log")
 	public static final BlockLivingLog LIVING_ACACIA_LOG = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_darkoak_log")
 	public static final BlockLivingLog LIVING_DARKOAK_LOG = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_oak_leaf")
 	public static final BlockLivingLeaf LIVING_OAK_LEAF = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_spruce_leaf")
 	public static final BlockLivingLeaf LIVING_SPRUCE_LEAF = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_birch_leaf")
 	public static final BlockLivingLeaf LIVING_BIRCH_LEAF = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_jungle_leaf")
 	public static final BlockLivingLeaf LIVING_JUNGLE_LEAF = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_acacia_leaf")
 	public static final BlockLivingLeaf LIVING_ACACIA_LEAF = null;
-	@GameRegistry.ObjectHolder("moarwoods:living_darkoak_leaf")
 	public static final BlockLivingLeaf LIVING_DARKOAK_LEAF = null;
 	
 	@GameRegistry.ObjectHolder("minecraft:farmer")
