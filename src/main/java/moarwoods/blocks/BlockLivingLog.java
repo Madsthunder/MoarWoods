@@ -13,7 +13,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
-import moarwoods.MoarWoods;
 import moarwoods.blocks.living.tree.AbstractPlant;
 import moarwoods.blocks.living.tree.IPlant;
 import net.minecraft.block.Block;
@@ -23,6 +22,7 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -49,6 +49,12 @@ public class BlockLivingLog extends BlockLog
 	public IBlockState getStateFromMeta(int meta)
 	{
 		return this.getDefaultState().withProperty(DEATH_STAGE, Math.min(3, Math.max(0, meta / 4))).withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.values()[meta & 3]);
+	}
+	
+	@Override
+	public IBlockState withRotation(IBlockState state, Rotation rotation)
+	{
+		return state;
 	}
 	
 	@Override
