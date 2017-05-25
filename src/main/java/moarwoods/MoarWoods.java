@@ -310,7 +310,7 @@ public class MoarWoods
 		List<Block> blocks = Lists.newArrayList();
 		{
 			blocks.add(new BlockLivingLog(new SmallOakTree()).setRegistryName("moarwoods:oak_tree_small_trunk"));
-			blocks.add(new BlockLivingLog(new SmallSpruceTree()).setRegistryName("moarwoods:spruce_tree_log_trunk"));
+			blocks.add(new BlockLivingLog(new SmallSpruceTree()).setRegistryName("moarwoods:spruce_tree_small_trunk"));
 			blocks.add(new BlockLivingLog(new SmallBirchTree()).setRegistryName("moarwoods:birch_tree_small_trunk"));
 			blocks.add(new BlockLivingLog(new SmallJungleTree()).setRegistryName("moarwoods:jungle_tree_small_trunk"));
 			blocks.add(new BlockLivingLog(null).setRegistryName("moarwoods:acacia_tree_small_trunk"));
