@@ -50,8 +50,8 @@ public class MoarWoodsProxies
 	
 	public void init()
 	{
-        VillagerFarmer.addItems(VillagerRegistry.FARMER, VillagerRegistry.FARMER.getCareer(0), Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.WHEAT, Items.BEETROOT, Items.POTATO, Items.POISONOUS_POTATO, Items.CARROT);
-        VillagerFarmer.addItems(VillagerRegistry.FARMER, VillagerRegistry.FARMER.getCareer(1), Items.FISH);
+        VillagerFarmer.addItems(VillagerRegistry.FARMER.getCareer(0), Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.WHEAT, Items.BEETROOT, Items.POTATO, Items.POISONOUS_POTATO, Items.CARROT);
+        VillagerFarmer.addItems(VillagerRegistry.FARMER.getCareer(1), Items.FISH);
 	}
 	
 	public void post()

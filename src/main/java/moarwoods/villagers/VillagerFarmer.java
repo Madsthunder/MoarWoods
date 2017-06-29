@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfessio
 
 public class VillagerFarmer
 {
-	private static final Map<Pair<VillagerProfession, VillagerCareer>, List<Predicate<ItemStack>>> FARMERS;
+	private static final Map<VillagerCareer, List<Predicate<ItemStack>>> FARMERS;
 	private final EntityVillager villager;
 	
 	public VillagerFarmer(EntityVillager villager)
@@ -38,23 +38,22 @@ public class VillagerFarmer
 		return Iterables.any(FARMERS.getOrDefault(Pair.of(profession, profession.getCareer(compound.getInteger("Career"))), Lists.newArrayList(Predicates.alwaysFalse())), predicate -> predicate.apply(stack));
 	}
 	
-	public static void addItems(VillagerProfession profession, VillagerCareer career, Item... items)
+	public static void addItems(VillagerCareer career, Item... items)
 	{
-		addItemPredicates(profession, career, Iterables.toArray(Iterables.transform(Lists.newArrayList(items), item -> (Predicate<ItemStack>)stack -> stack.getItem() == item), Predicate.class));
+		addItemPredicates(career, Iterables.toArray(Iterables.transform(Lists.newArrayList(items), item -> (Predicate<ItemStack>)stack -> stack.getItem() == item), Predicate.class));
 	}
 	
-	public static void addItemStacks(VillagerProfession profession, VillagerCareer career, ItemStack... stacks)
+	public static void addItemStacks(VillagerCareer career, ItemStack... stacks)
 	{
-		addItemPredicates(profession, career, Iterables.toArray(Iterables.transform(Lists.newArrayList(stacks), stack -> (Predicate<ItemStack>)stack1 -> ItemStack.areItemsEqual(stack, stack1)), Predicate.class));
+		addItemPredicates(career, Iterables.toArray(Iterables.transform(Lists.newArrayList(stacks), stack -> (Predicate<ItemStack>)stack1 -> ItemStack.areItemsEqual(stack, stack1)), Predicate.class));
 	}
 	
-	public static void addItemPredicates(VillagerProfession profession, VillagerCareer career, Predicate<ItemStack>... predicates)
+	public static void addItemPredicates(VillagerCareer career, Predicate<ItemStack>... predicates)
 	{
-		Pair<VillagerProfession, VillagerCareer> pair = Pair.of(profession, career);
-		if(FARMERS.containsKey(pair))
-			FARMERS.get(pair).addAll(Lists.newArrayList(predicates));
+		if(FARMERS.containsKey(career))
+			FARMERS.get(career).addAll(Lists.newArrayList(predicates));
 		else
-			FARMERS.put(pair, Lists.newArrayList(predicates));
+			FARMERS.put(career, Lists.newArrayList(predicates));
 	}
 	
 	static
