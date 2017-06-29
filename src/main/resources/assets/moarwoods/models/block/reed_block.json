@@ -1,0 +1,8 @@
+{
+	"parent": "minecraft:block/cube_column",
+	"textures":
+	{
+		"side": "moarwoods:blocks/reed_block_side",
+		"end": "moarwoods:blocks/reed_block_top"
+	}
+}

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 import moarwoods.MoarWoods;
@@ -13,7 +15,6 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +23,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class CommandSetBiome extends CommandBase
@@ -57,6 +57,7 @@ public class CommandSetBiome extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
+	    System.out.println(Iterables.filter(ForgeRegistries.RECIPES.getKeys(), (Predicate<ResourceLocation>)(key) -> "moarwoods".equals(key.getResourceDomain())));
 		if(args.length < 5)
 			throw new WrongUsageException(this.getUsage(sender));
 		byte biome = (byte)Biome.getIdForBiome(ForgeRegistries.BIOMES.getValue(new ResourceLocation(args[0])));
@@ -90,7 +91,7 @@ public class CommandSetBiome extends CommandBase
 		for(Entry<ChunkPos, Byte[]> entry : toset.entrySet())
 		{
 			ChunkPos pos = entry.getKey();
-			Chunk chunk = provider.provideChunk(pos.chunkXPos, pos.chunkZPos);
+			Chunk chunk = provider.provideChunk(pos.x, pos.z);
 			Byte[] array = entry.getValue();
 			if(!chunk.isEmpty())
 			{

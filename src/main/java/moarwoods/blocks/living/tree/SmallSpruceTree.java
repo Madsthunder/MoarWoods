@@ -1,39 +1,43 @@
 package moarwoods.blocks.living.tree;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Triple;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
-import moarwoods.MoarWoods.ObjectReferences;
+import moarwoods.MoarWoodsObjects;
+import moarwoods.blocks.BlockLivingBranch;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class SmallSpruceTree extends AbstractPlant
+public class SmallSpruceTree extends AbstractSmallTree<BlockLivingLog, BlockLivingLeaf, BlockLivingBranch>
 {
 
 	@Override
 	public BlockLivingLog getLogBlock()
 	{
-		return ObjectReferences.SPRUCE_TREE_SMALL_TRUNK;
+		return MoarWoodsObjects.SPRUCE_TREE_SMALL_TRUNK;
 	}
 
 	@Override
 	public BlockLivingLeaf getLeafBlock()
 	{
-		return ObjectReferences.SPRUCE_TREE_SMALL_LEAVES;
+		return MoarWoodsObjects.SPRUCE_TREE_SMALL_LEAVES;
 	}
 
 	@Override
@@ -49,56 +53,59 @@ public class SmallSpruceTree extends AbstractPlant
 	}
 
 	@Override
-	public List<BlockPos> getLeaves(World world, BlockPos pos, int height, long[] seeds)
+	public Map<IBlockState, Collection<BlockPos>> getBlocks(World world, BlockPos pos, int height, boolean include_existing, long[] seeds)
 	{
-		List<BlockPos> leaves = Lists.newArrayList();
+		Set<BlockPos> leaves = Sets.newHashSet();
 		float growth = Math.min((float)height / (float)this.getHeightLimit(world, pos, seeds), 1);
 		int empty_space;
 		{
 			Random random = new Random(seeds[0]);
 			random.nextInt();
-			empty_space = MathHelper.floor((1 + random.nextInt(2)) * growth);
+			empty_space = Math.max(height == 1 ? 0 : 1, MathHelper.floor((1 + random.nextInt(2)) * growth));
 		}
 		Random random = new Random(seeds[2]);
 		int extra_leaf_height = MathHelper.floor((1 + random.nextInt(2)) * growth);
 		int radius_limit = 2 + random.nextInt(2);
-        //How wide the leaves should grow, by default 1 or 0, 1 being the top leaves as a cross and 0 as a simple dot
         int current_radius = random.nextInt(2);
-        //What's the maximum width before the leaves reset to 0 after the first one to two go-rounds of the loop below (determined by i3) and 1 after everything else
         int max_radius = 1;
-        //What should the width reset to
         int min_radius = 0;
-        //Incrememnt all the way down to where the leaves should stop
         for(int l3 = -extra_leaf_height; l3 <= height - empty_space; l3++)
         {
             for(int x = pos.getX() - current_radius; x <= pos.getX() + current_radius; x++)
                 for(int z = pos.getZ() - current_radius; z <= pos.getZ() + current_radius; z++)
                     if(Math.abs(x - pos.getX()) != current_radius || Math.abs(z - pos.getZ()) != current_radius || current_radius <= 0)
                         leaves.add(new BlockPos(x, pos.getY() + height - l3, z));
-            //Should i3 reset
             if (current_radius >= max_radius)
             {
-            	//Reset i3 to whatever k3 is
                 current_radius = min_radius;
-                //Reset k3 to 1 after the first one to two go-rounds of the above loop (determined by i3)
                 min_radius = 1;
-                //Increment j3
                 max_radius++;
-                //Is j3 greater than the maximum radius of the leaves
                 if(max_radius > radius_limit)
                     max_radius = radius_limit;
             }
             else
-            	//If i3 shouldn't reset, increment it!
                 current_radius++;
         }
-		return leaves;
-	}
-
-	@Override
-	public List<IPlantBranch> getBranches(World world, BlockPos pos, int height, long[] seeds)
-	{
-		return Lists.newArrayList();
+		int x = pos.getX();
+		int y = pos.getY();
+		int z = pos.getZ();
+		Block leaf = this.getLeafBlock();
+		Map<IBlockState, Collection<BlockPos>> blocks = Maps.newHashMap();
+		Map<BlockPos, Block> already_discovered = Maps.newHashMap();
+		blocks.put(this.getLeafBlock().getDefaultState(), Sets.filter(leaves, (pos1) -> 
+		{
+			if(already_discovered.computeIfAbsent(pos1, (pos11) -> world.getBlockState(pos11).getBlock()) == leaf)
+				return include_existing;
+			for(EnumFacing facing : EnumFacing.values())
+			{
+				BlockPos pos2 = pos1.offset(facing);
+				int y1 = pos2.getY();
+				if((pos2.getX() == x && pos2.getZ() == z && y1 >= y && y1 - y < height) || (leaves.contains(pos2) && already_discovered.computeIfAbsent(pos2, (pos21) -> world.getBlockState(pos21).getBlock()) == leaf))
+					return true;
+			}
+			return false;
+		}));
+		return blocks;
 	}
 
 	@Override
@@ -138,7 +145,7 @@ public class SmallSpruceTree extends AbstractPlant
 				}
 		Predicate<Triple<IBlockState, World, BlockPos>> predicate = (triple) -> triple.getLeft().getBlock() instanceof BlockLeaves;
 		for(Entry<BlockPos, IBlockState> entry : to_set.entrySet())
-			AbstractPlant.setLeaves(world, entry.getKey(), entry.getValue(), predicate);
+			AbstractPlant.setBlock(world, entry.getKey(), entry.getValue(), predicate);
 		return transformations;
 	
 	}
@@ -147,13 +154,6 @@ public class SmallSpruceTree extends AbstractPlant
 	{
 		// TODO Auto-generated method stub
 		return new TObjectIntHashMap<BlockPos>();
-	}
-
-	@Override
-	public int getEmptySpace(int height)
-	{
-		// TODO Auto-generated method stub
-		return 0;
 	}
 	
 }

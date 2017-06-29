@@ -4,43 +4,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
-import moarwoods.MoarWoods;
-import moarwoods.MoarWoods.ObjectReferences;
+import moarwoods.MoarWoodsBlockSeeds;
+import moarwoods.MoarWoodsObjects;
+import moarwoods.blocks.BlockLivingBranch;
 import moarwoods.blocks.BlockLivingLeaf;
 import moarwoods.blocks.BlockLivingLog;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.BlockLog;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public abstract class AbstractPlant implements IPlant
+public abstract class AbstractPlant<T extends BlockLivingLog, L extends BlockLivingLeaf, B extends BlockLivingBranch> extends Plant<T, L, B>
 {
 	@Override
 	public long[] getSeeds(World world, BlockPos pos)
 	{
-		long[] seeds = null;
-		Byte seed;
-		if(!world.isRemote && (seed = MoarWoods.getBlockHistory(world, pos)) != null)
-		{
-			Random random = new Random(seed);
-			seeds = new long[3];
-			for(int i = 0; i < seeds.length; i++)
-				seeds[i] = random.nextLong();
-		}
+		Random random = new Random(MoarWoodsBlockSeeds.getBlockSeed(world, pos));
+		long[] seeds = new long[3];
+		for(int i = 0; i < seeds.length; i++)
+			seeds[i] = random.nextLong();
 		return seeds;
 	}
 	
@@ -48,9 +49,12 @@ public abstract class AbstractPlant implements IPlant
 	
 	public abstract TObjectIntHashMap<BlockPos> getGrowthRadiuses(World world, BlockPos pos, int height, long seed);
 	
-	public abstract int getEmptySpace(int height);
+	public int getRequiredEnergyForSustainability(World world, BlockPos pos, int height, long[] seeds)
+	{
+		return this.getRequiredEnergyForGrowth(world, pos, height, seeds);
+	}
 	
-	public int getRequiredEnergyForGrowth(World world, BlockPos pos, int height)
+	public int getRequiredEnergyForGrowth(World world, BlockPos pos, int height, long[] seeds)
 	{
 		return 7;
 	}
@@ -89,102 +93,55 @@ public abstract class AbstractPlant implements IPlant
 				}
 		Predicate<Triple<IBlockState, World, BlockPos>> predicate = (triple) -> triple.getLeft().getBlock() instanceof BlockLeaves;
 		for(Entry<BlockPos, IBlockState> entry : to_set.entrySet())
-			AbstractPlant.setLeaves(world, entry.getKey(), entry.getValue(), predicate);
+			AbstractPlant.setBlock(world, entry.getKey(), entry.getValue(), predicate);
 		return transformations;
+	}
+	
+	@Nullable
+	public abstract Pair<Integer, TObjectIntHashMap<BlockPos>> updateHeight(World world, BlockPos pos, int current_height, boolean update_logs, long[] seeds);
+	
+	public boolean hasRoomToGrow(World world, BlockPos pos, int current_height, long[] seeds)
+	{
+		TObjectIntHashMap<BlockPos> radiuses = this.getGrowthRadiuses(world, pos, current_height, seeds[2]);
+		return Iterables.all(radiuses.keySet(), (pos1) -> checkIfCanGrow(world, pos1, radiuses.get(pos1)));
+		
+	}
+	
+	public Map<BlockPos, BlockPos> shiftTree(World world, BlockPos pos, int from_height, int to_height, long[] seeds)
+	{
+		this.placeLogsAt(world, pos, from_height, to_height, seeds);
+		return this.shiftLeaves(world, pos, from_height, to_height, seeds);
+	}
+	
+	public void placeLogsAt(World world, BlockPos pos, int from_height, int to_height, long[] seeds)
+	{
+		IBlockState state = this.getLogBlock().getDefaultState();
+		for(int i = from_height; to_height > i; i++)
+			world.setBlockState(pos.up(i), state);
 	}
 	
 	@Override
 	public boolean grow(World world, BlockPos pos, boolean update_logs)
 	{
-		IBlockState state = world.getBlockState(pos);
-		// [0] is for height, [1] is for branches, [2] is for leaves
 		long[] seeds = this.getSeeds(world, pos);
 		if(seeds != null)
 		{
-			{
-				IBlockState down = world.getBlockState(pos.down());
-				if(!down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, ObjectReferences.SAPLING))
-					return false;
-			}
-			int height_limit = this.getHeightLimit(world, pos, seeds);
-			int current_height = getHeight(world, pos, this.getLogBlock());
-			if(current_height > height_limit)
-			{
-				if(update_logs)
-				{
-					BlockPos pos1 = pos.up(current_height - 1);
-					IBlockState state1 = world.getBlockState(pos1);
-					int stage = state1.getValue(BlockLivingLog.DEATH_STAGE);
-					if(stage >= 3)
-					{
-						world.setBlockToAir(pos1);
-						this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
-					}
-					else
-					{
-						world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DEATH_STAGE, stage + 1));
-					}
-				}
+			if(!isBase(world, pos))
 				return false;
-			}
-			int total_energy;
-			TObjectIntHashMap<BlockPos> energy_sources;
-			{
-				Pair<Integer, TObjectIntHashMap<BlockPos>> pair = getTotalEnergy(world, pos, this.getLeafSearchRadius(world, pos, current_height, seeds), current_height + this.getLeafSearchExtraHeight(world, pos, current_height, seeds), this.getLeafBlock());
-				total_energy = pair.getLeft();
-				energy_sources = pair.getRight();
-			}
-			if(this.getRequiredEnergyForGrowth(world, pos, current_height) > total_energy)
-			{
-				if(update_logs)
-				{
-					BlockPos pos1 = pos.up(current_height - 1);
-					IBlockState state1 = world.getBlockState(pos1);
-					int stage = state1.getValue(BlockLivingLog.DEATH_STAGE);
-					if(stage >= 3)
-					{
-						world.setBlockToAir(pos1);
-						this.shiftLeaves(world, pos, current_height, current_height - 1, seeds);
-					}
-					else
-					{
-						world.setBlockState(pos1, state1.withProperty(BlockLivingLog.DEATH_STAGE, stage + 1));
-					}
-				}
+			int current_height = getHeight(world, pos);
+			Pair<Integer, TObjectIntHashMap<BlockPos>> pair = this.updateHeight(world, pos, current_height, update_logs, seeds);
+			if(pair == null)
 				return false;
-			}
-			if(current_height == height_limit)
-				return false;
+			int total_energy = pair.getLeft();
+			TObjectIntHashMap<BlockPos> energy_sources = pair.getRight();
 			int used_energy = 0;
-			{
-				int required_energy = this.getRequiredEnergyForGrowth(world, pos, current_height);
-				if(required_energy > total_energy)
-					return false;
-				{
-					TObjectIntHashMap<BlockPos> radiuses = this.getGrowthRadiuses(world, pos, current_height, seeds[2]);
-					for(BlockPos pos1 : radiuses.keySet())
-						if(!MoarWoods.TerrainGenEventHandler.checkIfCanGrow(world, pos1, radiuses.get(pos1)))
-							return false;
-				}
-				{
-					{
-						Map<BlockPos, BlockPos> transformations = this.shiftLeaves(world, pos, current_height, current_height + 1, seeds);
-						TObjectIntHashMap<BlockPos> new_energy_sources = new TObjectIntHashMap<BlockPos>();
-						for(BlockPos pos1 : energy_sources.keySet())
-						{
-							BlockPos newpos = new BlockPos(transformations.getOrDefault(pos1, pos1));
-							int energy = energy_sources.get(pos1);
-							if(new_energy_sources.contains(newpos))
-								new_energy_sources.adjustValue(newpos, energy);
-							else
-								new_energy_sources.put(newpos, energy);
-						}
-						energy_sources = new_energy_sources;
-					}
-					world.setBlockState(pos.up(current_height), this.getLogBlock().getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));
-					used_energy += required_energy;
-				}
-			}
+			int required_energy = this.getRequiredEnergyForGrowth(world, pos, current_height, seeds);
+			if(required_energy > total_energy)
+				return false;
+			if(!this.hasRoomToGrow(world, pos, current_height, seeds))
+				return false;
+			energy_sources = transformEnergySources(this.shiftTree(world, pos, current_height, current_height + 1, seeds), energy_sources);
+			used_energy += required_energy;
 			useEnergy(world, used_energy, energy_sources, this.getLeafBlock());
 			return true;
 		}
@@ -232,35 +189,85 @@ public abstract class AbstractPlant implements IPlant
 			world.setBlockState(pos, block.withEnergy(tochange.get(pos), world, pos));
 	}
 	
-	public static boolean isBase(World world, BlockPos pos, BlockLivingLog block)
+	public static boolean isBase(World world, BlockPos pos)
 	{
 		IBlockState down = world.getBlockState(pos.down());
-		return down.getBlock() != block && down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, ObjectReferences.SAPLING);
+		return down.getBlock().canSustainPlant(down, world, pos.down(), EnumFacing.UP, MoarWoodsObjects.SAPLING);
 	}
 	
-	public static int getHeight(World world, BlockPos pos, BlockLivingLog block)
+	public static int getHeight(World world, BlockPos pos)
 	{
-		int current_height = 0;
-		for(;; current_height++)
-			if(world.getBlockState(pos.up(current_height)).getBlock() != block)
-				break;
-		return current_height;
+		int highest_y = pos.getY();
+		Set<BlockPos> check_history = Sets.newHashSet();
+		List<BlockPos> to_check = Lists.newArrayList(pos);
+		while(!to_check.isEmpty())
+		{
+			List<BlockPos> next_to_check = Lists.newArrayList();
+			for(BlockPos pos1 : to_check)
+				if(check_history.add(pos1))
+				{
+					highest_y = pos1.getY() > highest_y ? pos1.getY() : highest_y;
+					IBlockState state = world.getBlockState(pos1);
+					next_to_check.addAll(((BlockLivingLog)state.getBlock()).nextPositions(state, world, pos1, AxisDirection.POSITIVE));
+				}
+			to_check = next_to_check;
+		}
+		return highest_y - pos.getY() + 1;
 	}
 	
-	public static boolean hasBase(World world, BlockPos pos, BlockLivingLog block)
+	public static Set<BlockPos> getBases(World world, BlockPos pos)
 	{
-		while(!isBase(world, pos, block))
-			if(world.getBlockState(pos = pos.down()).getBlock() != block)
-				return false;
-		return true;
+		Set<BlockPos> check_history = Sets.newHashSet();
+		Set<BlockPos> bases = Sets.newHashSet();
+		List<BlockPos> to_check = Lists.newArrayList(pos);
+		while(!to_check.isEmpty())
+		{
+			List<BlockPos> next_to_check = Lists.newArrayList();
+			for(BlockPos pos1 : to_check)
+				if(check_history.add(pos1))
+					if(isBase(world, pos1))
+						bases.add(pos1);
+					else
+					{
+						IBlockState state = world.getBlockState(pos1);
+						next_to_check.addAll(((BlockLivingLog)state.getBlock()).nextPositions(state, world, pos1, AxisDirection.NEGATIVE));
+					}
+			to_check = next_to_check;
+		}
+		return bases;
 	}
 	
-	public static BlockPos getBase(World world, BlockPos pos, BlockLivingLog block)
+	public static TObjectIntHashMap<BlockPos> transformEnergySources(Map<BlockPos, BlockPos> transformations, TObjectIntHashMap<BlockPos> energy_sources)
 	{
-		while(!isBase(world, pos, block))
-			if(world.getBlockState(pos = pos.down()).getBlock() != block)
-				return null;
-		return pos;
+		TObjectIntHashMap<BlockPos> new_energy_sources = new TObjectIntHashMap<BlockPos>();
+		for(BlockPos pos1 : energy_sources.keySet())
+		{
+			BlockPos newpos = new BlockPos(transformations.getOrDefault(pos1, pos1));
+			int energy = energy_sources.get(pos1);
+			if(new_energy_sources.contains(newpos))
+				new_energy_sources.adjustValue(newpos, energy);
+			else
+				new_energy_sources.put(newpos, energy);
+		}
+		return new_energy_sources;
+	}
+	
+	public static boolean checkIfCanGrow(World world, BlockPos pos, int radius)
+	{
+		boolean flag = true;
+		BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+		for(int l = pos.getX() - radius; l <= pos.getX() + radius && flag; l++)
+			for(int i1 = pos.getZ() - radius; i1 <= pos.getZ() + radius && flag; i1++)
+				if((pos.getY() < 0 && pos.getY() >= world.getHeight()) || !canGrowInto(world, blockpos$mutableblockpos.setPos(l, pos.getY(), i1).toImmutable()))
+					flag = false;
+		return flag;
+	}
+	
+	public static boolean canGrowInto(World world, BlockPos pos)
+	{
+		IBlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		return state.getBlock().isAir(state, world, pos) || state.getBlock().isLeaves(state, world, pos) || state.getBlock().isWood(world, pos) || block == Blocks.GRASS || block == Blocks.DIRT || block == Blocks.SAPLING || block == Blocks.VINE;
 	}
 	
 	public static boolean setLeaves(World world, BlockPos pos, BlockLivingLeaf leaves)
@@ -270,28 +277,28 @@ public abstract class AbstractPlant implements IPlant
 	
 	public static boolean setLeaves(World world, BlockPos pos, IBlockState state)
 	{
-		return AbstractPlant.setLeaves(world, pos, state, Predicates.alwaysFalse());
+		return AbstractPlant.setBlock(world, pos, state, Predicates.alwaysFalse());
 	}
 	
 	public static boolean setLeaves(World world, BlockPos pos, BlockLivingLeaf leaves, Predicate<Triple<IBlockState, World, BlockPos>> alternative)
 	{
-		return AbstractPlant.setLeaves(world, pos, leaves.getDefaultState(), alternative);
+		return AbstractPlant.setBlock(world, pos, leaves.getDefaultState(), alternative);
 	}
 	
-	public static boolean setLeaves(World world, BlockPos pos, IBlockState state, Predicate<Triple<IBlockState, World, BlockPos>> alternative)
+	public static boolean setBlock(World world, BlockPos pos, IBlockState state, Predicate<Triple<IBlockState, World, BlockPos>> alternative)
 	{
-		Preconditions.checkArgument(state.getBlock() instanceof BlockLivingLeaf, "\'%s\' must be an instance of moarwoods.blocks.BlockLiveLeaves", state.getBlock().getRegistryName());
-		BlockLivingLeaf leaf = (BlockLivingLeaf)state.getBlock();
+		Block block = state.getBlock();
 		IBlockState state1 = world.getBlockState(pos);
-		if(state1.getBlock() == state.getBlock())
+		if(block instanceof BlockLivingLeaf && state.getBlock() == state1.getBlock())
 		{
-			world.setBlockState(pos, leaf.withEnergy(Math.max(leaf.getEnergy(state, world, pos), ((BlockLivingLeaf)state1.getBlock()).getEnergy(state1, world, pos)), world, pos));
+			BlockLivingLeaf leaf = (BlockLivingLeaf)block;
+			world.setBlockState(pos, leaf.withEnergy(Math.max(leaf.getEnergy(state, null, null), ((BlockLivingLeaf)state1.getBlock()).getEnergy(state1, world, pos)), world, pos));
 			return true;
 		}
-		if(state1.getBlock().isAir(state1, world, pos) || alternative.apply(Triple.of(state1, world, pos)))
+		if(world.isAirBlock(pos) || alternative.apply(Triple.of(state1, world, pos)))
 		{
 			world.setBlockState(pos, state);
-			MoarWoods.setBlockHistory(world, pos, Integer.valueOf(world.rand.nextInt(256) - 128).byteValue());
+			MoarWoodsBlockSeeds.setBlockSeed(world, pos, MoarWoodsBlockSeeds.randomBlockSeed(world.rand));
 			return true;
 		}
 		return false;

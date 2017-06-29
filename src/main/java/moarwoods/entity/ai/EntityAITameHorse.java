@@ -37,7 +37,7 @@ public class EntityAITameHorse extends EntityAIBase
 	}
 	
 	@Override
-	public boolean continueExecuting()
+	public boolean shouldContinueExecuting()
 	{
 		return this.target != null && ((this.villager.isRidingSameEntity(this.target) && !this.target.isTame()) || this.villager.getAttackTarget() == this.target);
 	}
@@ -57,7 +57,7 @@ public class EntityAITameHorse extends EntityAIBase
 				else
 					this.villager.dismountRidingEntity();
 			}
-			else if(this.target.getEntityBoundingBox().intersectsWith(this.villager.getEntityBoundingBox().expandXyz(.5)))
+			else if(this.target.getEntityBoundingBox().intersects(this.villager.getEntityBoundingBox().grow(.5)))
 			{
 				this.villager.startRiding(this.target);
 			}

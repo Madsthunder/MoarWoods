@@ -1,0 +1,34 @@
+{
+    "forge_marker": 1,
+    "defaults":
+    {
+        "model": "moarwoods:quarter_log_horizontal",
+        "textures":
+        {
+            "bark": "minecraft:blocks/log_birch",
+            "inside": "moarwoods:blocks/quarter_birch_log_inside",
+            "end": "moarwoods:blocks/quarter_birch_log_top",
+            "normal_end": "minecraft:blocks/log_birch_top"
+        }
+    },
+    
+    "variants":
+    {
+    	"branch": [ { "model": "minecraft:cube_all", "textures": { "all": "#bark" } } ],
+    	"quarter=none,axis=x": [ { "model": "moarwoods:log", "x": 90, "textures": { "end": "#normal_end" } } ],
+    	"quarter=none,axis=y": [ { "model": "moarwoods:log", "textures": { "end": "#normal_end" } } ],
+    	"quarter=none,axis=z": [ { "model": "moarwoods:log", "x": 90, "y": 90, "textures": { "end": "#normal_end" } } ],
+    	"quarter=north_west,axis=x": [ { } ],
+    	"quarter=north_west,axis=y": [ { "model": "moarwoods:quarter_log_vertical" } ],
+    	"quarter=north_west,axis=z": [ { "x": 90, "y": 90 } ],
+    	"quarter=north_east,axis=x": [ { "x": 90 } ],
+    	"quarter=north_east,axis=y": [ { "model": "moarwoods:quarter_log_vertical", "y": 90 } ],
+    	"quarter=north_east,axis=z": [ { "y": 90 } ],
+    	"quarter=south_east,axis=x": [ { "x": 180 } ],
+    	"quarter=south_east,axis=y": [ { "model": "moarwoods:quarter_log_vertical", "y": 180 } ],
+    	"quarter=south_east,axis=z": [ { "x": 270, "y": 90 } ],
+    	"quarter=south_west,axis=x": [ { "x": 270 } ],
+    	"quarter=south_west,axis=y": [ { "model": "moarwoods:quarter_log_vertical", "y": 270 } ],
+    	"quarter=south_west,axis=z": [ { "x": 180, "y": 90 } ]
+    }
+}

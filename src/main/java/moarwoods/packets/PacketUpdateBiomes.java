@@ -1,6 +1,5 @@
 package moarwoods.packets;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -54,8 +53,8 @@ public class PacketUpdateBiomes implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeInt(this.pos.chunkXPos);
-		buf.writeInt(this.pos.chunkZPos);
+		buf.writeInt(this.pos.x);
+		buf.writeInt(this.pos.z);
 		List<byte[]> bytes = Lists.newArrayList();
 		int nonnulls = 0;
 		int offset = 0;
@@ -88,7 +87,7 @@ public class PacketUpdateBiomes implements IMessage
 			Minecraft.getMinecraft().addScheduledTask(() -> 
 			{
 				WorldClient world = Minecraft.getMinecraft().world;
-				Chunk chunk = world.getChunkProvider().provideChunk(message.pos.chunkXPos, message.pos.chunkZPos);
+				Chunk chunk = world.getChunkProvider().provideChunk(message.pos.x, message.pos.z);
 				if(!chunk.isEmpty())
 				{
 					byte[] chunkBiomeArray = chunk.getBiomeArray();

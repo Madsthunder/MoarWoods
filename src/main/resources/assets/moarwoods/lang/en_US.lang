@@ -1,23 +1,22 @@
-itemGroup.crafting_grids=MoarWoods: Crafting Grids
-itemGroup.flora=MoarWoods: Flora
-
-container.crafting_grid=Crafting Grid
-
-tile.oak_grid.name=Oak Crafting Grid
-tile.spruce_grid.name=Spruce Crafting Grid
-tile.birch_grid.name=Birch Crafting Grid
-tile.jungle_grid.name=Jungle Crafting Grid
-tile.acacia_grid.name=Acacia Crafting Grid
-tile.dark_oak_grid.name=Dark Oak Crafting Grid
-tile.apple_leave.name=Applee Leaves
-
-item.default_stick.name=Stick
-item.oak_stick.name=Oak Stick
-item.spruce_stick.name=Spruce Stick
-item.birch_stick.name=Birch Stick
-item.jungle_stick.name=Jungle Stick
-item.acacia_stick.name=Acacia Stick
-item.dark_oak_stick.name=Dark Oak Stick
+tile.moarwoods:oak_tree_small_trunk.name=Small Oak Tree Trunk
+tile.moarwoods:oak_tree_small_leaves.name=Small Oak Tree Leaves
+tile.moarwoods:spruce_tree_small_trunk.name=Small Spruce Tree Trunk
+tile.moarwoods:spruce_tree_small_leaves.name=Small Spruce Tree Leaves
+tile.moarwoods:birch_tree_small_trunk.name=Small Birch Tree Trunk
+tile.moarwoods:birch_tree_small_leaves.name=Small Birch Tree Leaves
+tile.moarwoods:jungle_tree_small_trunk.name=Small Jungle Tree Trunk
+tile.moarwoods:jungle_tree_small_leaves.name=Small Jungle Tree Leaves
+tile.moarwoods:acacia_tree_small_trunk.name=Small Acacia Tree Trunk
+tile.moarwoods:acacia_tree_smmall_leaves.name=Small Acacia Tree Leaves
+tile.moarwoods:darkoak_tree_large_trunk.name=Large Dark Oak Tree Trunk
+tile.moarwoods:darkoak_tree_large_leaves.name=Large Dark Oak Tree Leaves
+tile.moarwoods:oak_quarter_log.name=Oak Quarter Log
+tile.moarwoods:spruce_quarter_log.name=Spruce Quarter Log
+tile.moarwoods:birch_quarter_log.name=Birch Quarter Log
+tile.moarwoods:jungle_quarter_log.name=Jungle Quarter Log
+tile.moarwoods:acacia_quarter_log.name=Acacia Quarter Log
+tile.moarwoods:darkoak_quarter_log.name=Dark Oak Quarter Log
+tile.moarwoods:reed_block.name=Reed Block
 
 entity.villager.guard=Guard
 entity.villager.soldier=Soldier

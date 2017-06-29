@@ -46,7 +46,7 @@ public class EntityAIVillagerRequests extends EntityAIBase
 	}
 	
 	@Override
-	public boolean continueExecuting()
+	public boolean shouldContinueExecuting()
 	{
 		return this.currentRequest != null;
 	}
@@ -93,7 +93,7 @@ public class EntityAIVillagerRequests extends EntityAIBase
 		NBTTagList list = new NBTTagList();
 		for(Request request : this.requests)
 		{
-			RequestInstanceFactory factory = RequestInstanceFactory.getByClass(request.getClass());
+			RequestInstanceFactory<?> factory = RequestInstanceFactory.getByClass(request.getClass());
 			if(factory != RequestInstanceFactory.NULL)
 			{
 				NBTTagCompound compound = request.getNBT();

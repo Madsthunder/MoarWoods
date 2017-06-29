@@ -1,13 +1,16 @@
 package moarwoods.blocks;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 
-import moarwoods.blocks.living.tree.IPlant;
+import moarwoods.blocks.living.tree.Plant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockNewLeaf;
@@ -31,9 +34,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockLivingLeaf extends BlockLeaves
 {
 	public static final PropertyInteger ENERGY = PropertyInteger.create("energy", 0, 7);
-	private final BlockLeaves baseBlock;
-	public final IBlockState baseState;
 	public final int searchArea;
+	public final Predicate<Entry<IBlockState, Collection<BlockPos>>> filter = (entry) -> entry.getKey().getBlock() == this;
+ 	private final BlockLeaves baseBlock;
+	public final IBlockState baseState;
 	private final int[][][] surroundings1;
 	
 	public BlockLivingLeaf(IBlockState baseState)
@@ -96,14 +100,14 @@ public class BlockLivingLeaf extends BlockLeaves
 									i = -2;
 								else if(block instanceof BlockLivingLog)
 								{
-									IPlant plant = ((BlockLivingLog)block).getPlant();
-									i = plant != null && plant.getLeafBlock() == this ? 4 : -1;
+									Plant<?, ?, ?> plant = ((BlockLivingLog)block).plant;
+									i = plant != null && plant.getLeafBlock() == this ? this.searchArea : -1;
 								}
 								else
 									i = -1;
 								this.surroundings1[x][y][z] = i;
 							}
-					for(int i = 4; i >= 1; i--)
+					for(int i = this.searchArea; i >= 1; i--)
 						for(int x = 0; x <= this.searchArea * 2; x++)
 							for(int y = 0; y <= this.searchArea * 2; y++)
 								for(int z = 0; z <= this.searchArea * 2; z++)
@@ -128,29 +132,6 @@ public class BlockLivingLeaf extends BlockLeaves
 											this.surroundings1[x][y][z] = i - 1;
 										z--;
 									}
-					/**
-					 * for(int i3 = 1; i3 <= 4; i3++) for(int x1 = -4; x1 <= 4;
-					 * x1++) for(int y1 = -4; y1 <= 4; y1++) for(int z1 = -4; z1
-					 * <= 4; ++z1) if(this.surroundings[(x1 + 16) * 1024 + (y1 +
-					 * 16) * 32 + z1 + 16] == i3 - 1) { if(this.surroundings[(x1
-					 * + 16 - 1) * 1024 + (y1 + 16) * 32 + z1 + 16] == -2)
-					 * this.surroundings[(x1 + 16 - 1) * 1024 + (y1 + 16) * 32 +
-					 * z1 + 16] = i3; if(this.surroundings[(x1 + 16 + 1) * 1024
-					 * + (y1 + 16) * 32 + z1 + 16] == -2) this.surroundings[(x1
-					 * + 16 + 1) * 1024 + (y1 + 16) * 32 + z1 + 16] = i3;
-					 * if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16 - 1) *
-					 * 32 + z1 + 16] == -2) this.surroundings[(x1 + 16) * 1024 +
-					 * (y1 + 16 - 1) * 32 + z1 + 16] = i3;
-					 * if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16 + 1) *
-					 * 32 + z1 + 16] == -2) this.surroundings[(x1 + 16) * 1024 +
-					 * (y1 + 16 + 1) * 32 + z1 + 16] = i3;
-					 * if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 +
-					 * (z1 + 16 - 1)] == -2) this.surroundings[(x1 + 16) * 1024
-					 * + (y1 + 16) * 32 + (z1 + 16 - 1)] = i3;
-					 * if(this.surroundings[(x1 + 16) * 1024 + (y1 + 16) * 32 +
-					 * z1 + 16 + 1] == -2) this.surroundings[(x1 + 16) * 1024 +
-					 * (y1 + 16) * 32 + z1 + 16 + 1] = i3; }
-					 */
 				}
 				if(this.surroundings1[this.searchArea][this.searchArea][this.searchArea] >= 0)
 					world.setBlockState(pos, state = state.withProperty(CHECK_DECAY, false), 4);
@@ -165,9 +146,10 @@ public class BlockLivingLeaf extends BlockLeaves
 		
 		if(!world.isRemote)
 		{
+			int light = ((world.getLightFromNeighbors(pos.up()) - 7) * 2) / 5;
 			int skylight = world.getLightFor(EnumSkyBlock.SKY, pos);
 			int blocklight = world.getLightFor(EnumSkyBlock.BLOCK, pos);
-			world.setBlockState(pos, this.incrementEnergy((!world.isRaining() && 20 - skylight > 0 ? random.nextInt(20 - skylight) == 0 ? 1 : 0 : 1) + (30 - blocklight > 0 ? random.nextInt(30 - blocklight) == 0 ? 1 : 0 : 1), state, world, pos));
+			world.setBlockState(pos, this.incrementEnergy(light, state, world, pos));
 		}
 	}
 	

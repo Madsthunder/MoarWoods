@@ -1,0 +1,12 @@
+{
+	"conditions": [ { "type": "forge:mod_loaded", "modid": "minecraft" } ],
+	"type": "minecraft:crafting_shaped",
+	"key": { "#":  { "item": "minecraft:reeds" } },
+	"result": { "item": "moarwoods:reed_block" },
+	"pattern":
+	[
+		"###",
+		"###",
+		"###"
+	]
+}

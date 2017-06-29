@@ -45,7 +45,7 @@ public abstract class RequestInstanceFactory<I extends Request>
 		return this.clasz;
 	}
 	
-	public static void register(RequestInstanceFactory factory)
+	public static void register(RequestInstanceFactory<?> factory)
 	{
 		if(FACTORIES.containsKey(factory.getName()))
 			throw new IllegalArgumentException("Cannot have more than one type of instance factory.");
@@ -55,17 +55,17 @@ public abstract class RequestInstanceFactory<I extends Request>
 		CLASSES.put(factory.getRequestClass(), factory);
 	}
 	
-	public static RequestInstanceFactory getByName(String name)
+	public static RequestInstanceFactory<?> getByName(String name)
 	{
 		return getByName(new ResourceLocation(name));
 	}
 	
-	public static RequestInstanceFactory getByName(ResourceLocation name)
+	public static RequestInstanceFactory<?> getByName(ResourceLocation name)
 	{
 		return FACTORIES.getOrDefault(name, NULL);
 	}
 	
-	public static RequestInstanceFactory getByClass(Class<? extends Request> clasz)
+	public static RequestInstanceFactory<?> getByClass(Class<? extends Request> clasz)
 	{
 		return CLASSES.getOrDefault(clasz, NULL);
 	}

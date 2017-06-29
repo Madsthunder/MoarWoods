@@ -1,0 +1,46 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards":
+	{
+		"recipes":
+		[
+			"moarwoods:reed_block",
+			"moarwoods:reeds"
+		]
+	},
+	
+	"criteria":
+	{
+		"reeds":
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions":
+			{
+				"items":
+				[
+					{
+						"item": "minecraft:reeds",
+						"count": 9
+					}
+				]
+			}
+		},
+
+		"recipe":
+		{
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions":
+			{
+				"recipe": "moarwoods:reed_block"
+			}
+		}
+	},
+
+	"requirements":
+	[
+		[
+			"reeds",
+			"recipe"
+		]
+	]
+}

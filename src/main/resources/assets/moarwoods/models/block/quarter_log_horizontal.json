@@ -1,0 +1,25 @@
+{
+	"parent": "minecraft:block/block",
+    "textures":
+    {
+        "particle": "#bark"
+    },
+    
+    "elements":
+    [
+        {
+            "from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 16 ],
+            "faces":
+            {
+                "down": { "texture": "#bark", "rotation": 270, "cullface": "down" },
+                "up": { "texture": "#inside", "rotation": 90, "cullface": "up", "tintindex": 0 },
+                "north": { "texture": "#bark", "rotation": 90, "cullface": "north" },
+                "south": { "texture": "#inside", "rotation": 270, "cullface": "south", "tintindex": 0 },
+                "west": { "texture": "#end", "rotation": 270, "cullface": "west", "tintindex": 0 },
+                "east": { "texture": "#end", "rotation": 180, "cullface": "east", "tintindex": 0 }
+            }
+        }
+                
+    ]
+}
