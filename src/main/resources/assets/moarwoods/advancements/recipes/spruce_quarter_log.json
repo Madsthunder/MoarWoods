@@ -1,0 +1,47 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards":
+	{
+		"recipes":
+		[
+			"moarwoods:spruce_quarter_log",
+			"moarwoods:spruce_log"
+		]
+	},
+	
+	"criteria":
+	{
+		"logs":
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions":
+			{
+				"items":
+				[
+					{
+						"item": "minecraft:log",
+						"count": 4,
+						"data": 1
+					}
+				]
+			}
+		},
+
+		"recipe":
+		{
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions":
+			{
+				"recipe": "moarwoods:spruce_quarter_log"
+			}
+		}
+	},
+
+	"requirements":
+	[
+		[
+			"logs",
+			"recipe"
+		]
+	]
+}

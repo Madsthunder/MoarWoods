@@ -1,0 +1,11 @@
+{
+	"conditions": [ { "type": "forge:mod_loaded", "modid": "minecraft" } ],
+	"type": "minecraft:crafting_shaped",
+	"key": { "#":  { "item": "moarwoods:oak_quarter_log" } },
+	"result": { "item": "minecraft:log", "count": 4, "data": 0 },
+	"pattern":
+	[
+		"##",
+		"##"
+	]
+}

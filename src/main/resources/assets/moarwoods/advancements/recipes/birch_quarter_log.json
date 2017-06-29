@@ -1,0 +1,47 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards":
+	{
+		"recipes":
+		[
+			"moarwoods:birch_quarter_log",
+			"moarwoods:birch_log"
+		]
+	},
+	
+	"criteria":
+	{
+		"logs":
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions":
+			{
+				"items":
+				[
+					{
+						"item": "minecraft:log",
+						"count": 4,
+						"data": 2
+					}
+				]
+			}
+		},
+
+		"recipe":
+		{
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions":
+			{
+				"recipe": "moarwoods:birch_quarter_log"
+			}
+		}
+	},
+
+	"requirements":
+	[
+		[
+			"logs",
+			"recipe"
+		]
+	]
+}

@@ -1,0 +1,47 @@
+{
+	"parent": "minecraft:recipes/root",
+	"rewards":
+	{
+		"recipes":
+		[
+			"moarwoods:acacia_quarter_log",
+			"moarwoods:acacia_log"
+		]
+	},
+	
+	"criteria":
+	{
+		"logs":
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions":
+			{
+				"items":
+				[
+					{
+						"item": "minecraft:log2",
+						"count": 4,
+						"data": 0
+					}
+				]
+			}
+		},
+
+		"recipe":
+		{
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions":
+			{
+				"recipe": "moarwoods:acacia_quarter_log"
+			}
+		}
+	},
+
+	"requirements":
+	[
+		[
+			"logs",
+			"recipe"
+		]
+	]
+}

@@ -1,0 +1,11 @@
+{
+	"conditions": [ { "type": "forge:mod_loaded", "modid": "minecraft" } ],
+	"type": "minecraft:crafting_shaped",
+	"key": { "#":  { "item": "minecraft:log2", "data": 1 } },
+	"result": { "item": "moarwoods:darkoak_quarter_log", "count": 4 },
+	"pattern":
+	[
+		"##",
+		"##"
+	]
+}
