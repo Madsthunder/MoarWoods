@@ -57,7 +57,6 @@ public class CommandSetBiome extends CommandBase
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 	{
-	    System.out.println(Iterables.filter(ForgeRegistries.RECIPES.getKeys(), (Predicate<ResourceLocation>)(key) -> "moarwoods".equals(key.getResourceDomain())));
 		if(args.length < 5)
 			throw new WrongUsageException(this.getUsage(sender));
 		byte biome = (byte)Biome.getIdForBiome(ForgeRegistries.BIOMES.getValue(new ResourceLocation(args[0])));
