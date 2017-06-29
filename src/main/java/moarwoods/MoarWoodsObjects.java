@@ -145,7 +145,7 @@ public class MoarWoodsObjects
 			professions.add(profession);
 		}
 		{
-			VillagerProfession profession = new VillagerProfession("moarwoods:miner", "moarwoods:textrues/entity/villager/miner.png", "moarwoods:textures/entity/zombie_miner.png");
+			VillagerProfession profession = new VillagerProfession("moarwoods:miner", "moarwoods:textures/entity/villager/miner.png", "moarwoods:textures/entity/zombie_villager/zombie_miner.png");
 			new VillagerCareer(profession, "moarwoods:miner");
 			professions.add(profession);
 		}
