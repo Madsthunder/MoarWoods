@@ -1,0 +1,9 @@
+{
+	"variants": 
+	{ 
+		"type=normal": { "model": "moarwoods:diorite_bricks" }, 
+		"type=cracked": { "model": "moarwoods:cracked_diorite_bricks" }, 
+		"type=mossy": { "model": "moarwoods:mossy_diorite_bricks" }, 
+		"type=chiseled": { "model": "moarwoods:chiseled_diorite_bricks" } 
+	} 
+}

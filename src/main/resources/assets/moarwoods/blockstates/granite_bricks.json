@@ -1,0 +1,9 @@
+{
+	"variants": 
+	{ 
+		"type=normal": { "model": "moarwoods:granite_bricks" }, 
+		"type=cracked": { "model": "moarwoods:cracked_granite_bricks" }, 
+		"type=mossy": { "model": "moarwoods:mossy_granite_bricks" }, 
+		"type=chiseled": { "model": "moarwoods:chiseled_granite_bricks" } 
+	} 
+}

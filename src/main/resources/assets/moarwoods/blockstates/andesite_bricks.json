@@ -1,0 +1,9 @@
+{
+	"variants": 
+	{ 
+		"type=normal": { "model": "moarwoods:andesite_bricks" }, 
+		"type=cracked": { "model": "moarwoods:cracked_andesite_bricks" }, 
+		"type=mossy": { "model": "moarwoods:mossy_andesite_bricks" }, 
+		"type=chiseled": { "model": "moarwoods:chiseled_andesite_bricks" }
+	} 
+}

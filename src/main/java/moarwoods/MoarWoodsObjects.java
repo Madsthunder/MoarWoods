@@ -8,21 +8,25 @@ import moarwoods.blocks.BlockLivingLog;
 import moarwoods.blocks.BlockLivingQuarterLog;
 import moarwoods.blocks.BlockQuarterLog;
 import moarwoods.blocks.BlockReedBlock;
+import moarwoods.blocks.BlockStoneBricks;
 import moarwoods.blocks.living.tree.SmallBirchTree;
 import moarwoods.blocks.living.tree.SmallJungleTree;
 import moarwoods.blocks.living.tree.SmallOakTree;
 import moarwoods.blocks.living.tree.SmallSpruceTree;
+import moarwoods.items.ItemStoneBricks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockNewLeaf;
 import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -77,6 +81,10 @@ public class MoarWoodsObjects
 	public static final BlockQuarterLog DARKOAK_QUARTER_LOG = null;	
 	
 	public static final BlockReedBlock REED_BLOCK = null;
+
+    public static final BlockStoneBricks GRANITE_BRICKS = null;
+    public static final BlockStoneBricks DIORITE_BRICKS = null;
+    public static final BlockStoneBricks ANDESITE_BRICKS = null;
 	
 	@SubscribeEvent
 	public static void onBlocksRegister(RegistryEvent.Register<Block> event)
@@ -118,6 +126,11 @@ public class MoarWoodsObjects
 		{
 	        registry.register(new BlockReedBlock().setUnlocalizedName("moarwoods:reed_block").setRegistryName("moarwoods:reed_block"));
 		}
+		{
+            registry.register(new BlockStoneBricks(MapColor.DIRT).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:granite_bricks").setRegistryName("moarwoods:granite_bricks"));
+            registry.register(new BlockStoneBricks(MapColor.QUARTZ).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:diorite_bricks").setRegistryName("moarwoods:diorite_bricks"));
+		    registry.register(new BlockStoneBricks(MapColor.STONE).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:andesite_bricks").setRegistryName("moarwoods:andesite_bricks"));
+		}
 	}
 	
 	@SubscribeEvent
@@ -134,6 +147,11 @@ public class MoarWoodsObjects
 		}
 		{
 	        registry.register(new ItemBlock(REED_BLOCK).setRegistryName("moarwoods:reed_block"));
+		}
+		{
+            registry.register(new ItemStoneBricks(GRANITE_BRICKS, "granite_bricks").setRegistryName(GRANITE_BRICKS.getRegistryName()));
+            registry.register(new ItemStoneBricks(DIORITE_BRICKS, "diorite_bricks").setRegistryName(DIORITE_BRICKS.getRegistryName()));
+            registry.register(new ItemStoneBricks(ANDESITE_BRICKS, "andesite_bricks").setRegistryName(ANDESITE_BRICKS.getRegistryName()));
 		}
 	}
 	
@@ -211,6 +229,18 @@ public class MoarWoodsObjects
         ModelLoader.setCustomStateMapper(MoarWoodsObjects.ACACIA_TREE_SMALL_LEAVES, createLeafStateMapper());
         ModelLoader.setCustomStateMapper(MoarWoodsObjects.DARKOAK_TREE_LARGE_LEAVES, createLeafStateMapper());
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.REED_BLOCK), 0, new ModelResourceLocation("moarwoods:reed_block", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.GRANITE_BRICKS), 0, new ModelResourceLocation("moarwoods:granite_bricks", "type=normal"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.GRANITE_BRICKS), 1, new ModelResourceLocation("moarwoods:granite_bricks", "type=cracked"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.GRANITE_BRICKS), 2, new ModelResourceLocation("moarwoods:granite_bricks", "type=mossy"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.GRANITE_BRICKS), 3, new ModelResourceLocation("moarwoods:granite_bricks", "type=chiseled"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.DIORITE_BRICKS), 0, new ModelResourceLocation("moarwoods:diorite_bricks", "type=normal"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.DIORITE_BRICKS), 1, new ModelResourceLocation("moarwoods:diorite_bricks", "type=cracked"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.DIORITE_BRICKS), 2, new ModelResourceLocation("moarwoods:diorite_bricks", "type=mossy"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.DIORITE_BRICKS), 3, new ModelResourceLocation("moarwoods:diorite_bricks", "type=chiseled"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.ANDESITE_BRICKS), 0, new ModelResourceLocation("moarwoods:andesite_bricks", "type=normal"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.ANDESITE_BRICKS), 1, new ModelResourceLocation("moarwoods:andesite_bricks", "type=cracked"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.ANDESITE_BRICKS), 2, new ModelResourceLocation("moarwoods:andesite_bricks", "type=mossy"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.ANDESITE_BRICKS), 3, new ModelResourceLocation("moarwoods:andesite_bricks", "type=chiseled"));
 	}
     
 	@SideOnly(Side.CLIENT)
