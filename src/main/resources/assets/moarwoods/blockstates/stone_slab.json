@@ -1,0 +1,32 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"model": "minecraft:half_slab",
+		"textures":
+		{
+			"all": "minecraft:blocks/stonebrick",
+			"particle": "#all",
+			"bottom": "#all",
+			"top": "#all",
+			"side": "#all"
+		}
+	},
+	
+	"variants":
+	{
+		"variant":
+		{
+			"normal_granite_bricks": { "textures": { "all": "moarwoods:blocks/granite_bricks" } },
+			"normal_diorite_bricks": { "textures": { "all": "moarwoods:blocks/diorite_bricks" } },
+			"normal_andesite_bricks": { "textures": { "all": "moarwoods:blocks/andesite_bricks" } }
+		},
+		
+		"type":
+		{
+			"bottom": { },
+			"top": { "model": "minecraft:upper_slab" },
+			"double": { "model": "minecraft:cube_all" }
+		}
+	}
+}

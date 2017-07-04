@@ -9,6 +9,7 @@ import moarwoods.blocks.BlockLivingQuarterLog;
 import moarwoods.blocks.BlockQuarterLog;
 import moarwoods.blocks.BlockReedBlock;
 import moarwoods.blocks.BlockStoneBricks;
+import moarwoods.blocks.BlockStoneSlab;
 import moarwoods.blocks.living.tree.SmallBirchTree;
 import moarwoods.blocks.living.tree.SmallJungleTree;
 import moarwoods.blocks.living.tree.SmallOakTree;
@@ -20,6 +21,7 @@ import net.minecraft.block.BlockNewLeaf;
 import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockSapling;
+import net.minecraft.block.BlockSlab;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -30,6 +32,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemSlab;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -85,6 +88,8 @@ public class MoarWoodsObjects
     public static final BlockStoneBricks GRANITE_BRICKS = null;
     public static final BlockStoneBricks DIORITE_BRICKS = null;
     public static final BlockStoneBricks ANDESITE_BRICKS = null;
+    public static final BlockStoneSlab STONE_SLAB = null;
+    public static final BlockStoneSlab DOUBLE_STONE_SLAB = null;
 	
 	@SubscribeEvent
 	public static void onBlocksRegister(RegistryEvent.Register<Block> event)
@@ -130,6 +135,8 @@ public class MoarWoodsObjects
             registry.register(new BlockStoneBricks(MapColor.DIRT).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:granite_bricks").setRegistryName("moarwoods:granite_bricks"));
             registry.register(new BlockStoneBricks(MapColor.QUARTZ).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:diorite_bricks").setRegistryName("moarwoods:diorite_bricks"));
 		    registry.register(new BlockStoneBricks(MapColor.STONE).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:andesite_bricks").setRegistryName("moarwoods:andesite_bricks"));
+            registry.register(new BlockStoneSlab(false).setRegistryName("moarwoods:stone_slab"));
+            registry.register(new BlockStoneSlab(true).setRegistryName("moarwoods:double_stone_slab"));
 		}
 	}
 	
@@ -152,6 +159,7 @@ public class MoarWoodsObjects
             registry.register(new ItemStoneBricks(GRANITE_BRICKS, "granite_bricks").setRegistryName(GRANITE_BRICKS.getRegistryName()));
             registry.register(new ItemStoneBricks(DIORITE_BRICKS, "diorite_bricks").setRegistryName(DIORITE_BRICKS.getRegistryName()));
             registry.register(new ItemStoneBricks(ANDESITE_BRICKS, "andesite_bricks").setRegistryName(ANDESITE_BRICKS.getRegistryName()));
+            registry.register(new ItemSlab(STONE_SLAB, STONE_SLAB, DOUBLE_STONE_SLAB).setRegistryName(STONE_SLAB.getRegistryName()));
 		}
 	}
 	
@@ -241,6 +249,11 @@ public class MoarWoodsObjects
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.ANDESITE_BRICKS), 1, new ModelResourceLocation("moarwoods:andesite_bricks", "type=cracked"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.ANDESITE_BRICKS), 2, new ModelResourceLocation("moarwoods:andesite_bricks", "type=mossy"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.ANDESITE_BRICKS), 3, new ModelResourceLocation("moarwoods:andesite_bricks", "type=chiseled"));
+        ModelLoader.setCustomStateMapper(STONE_SLAB, createStoneSlabStateMapper());
+        ModelLoader.setCustomStateMapper(DOUBLE_STONE_SLAB, createStoneSlabStateMapper());
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.STONE_SLAB), 0, new ModelResourceLocation("moarwoods:stone_slab", "type=bottom,variant=normal_granite_bricks"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.STONE_SLAB), 1, new ModelResourceLocation("moarwoods:stone_slab", "type=bottom,variant=normal_diorite_bricks"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(MoarWoodsObjects.STONE_SLAB), 2, new ModelResourceLocation("moarwoods:stone_slab", "type=bottom,variant=normal_andesite_bricks"));
 	}
     
 	@SideOnly(Side.CLIENT)
@@ -273,6 +286,20 @@ public class MoarWoodsObjects
                 return new ModelResourceLocation(state.getBlock().getRegistryName(), "normal");
             }
             
+        };
+    }
+    
+    @SideOnly(Side.CLIENT)
+    private static IStateMapper createStoneSlabStateMapper()
+    {
+        
+        return new StateMapperBase()
+        {
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+            {
+                return new ModelResourceLocation(new ResourceLocation("moarwoods:stone_slab"), String.format("type=%s,variant=%s", ((BlockSlab)state.getBlock()).isDouble() ? "double" : state.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.TOP ? "top" : "bottom", state.getValue(BlockStoneSlab.VARIANT).getName()));
+            }
         };
     }
 }

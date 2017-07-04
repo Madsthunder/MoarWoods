@@ -29,6 +29,9 @@ tile.moarwoods:normal_andesite_bricks.name=Andesite Bricks
 tile.moarwoods:cracked_andesite_bricks.name=Cracked Andesite Bricks
 tile.moarwoods:mossy_andesite_bricks.name=Mossy Andesite Bricks
 tile.moarwoods:chiseled_andesite_bricks.name=Chiseled Andesite Bricks
+tile.moarwoods:normal_granite_brick_slab.name=Granite Bricks Slab
+tile.moarwoods:normal_diorite_brick_slab.name=Diorite Bricks Slab
+tile.moarwoods:normal_andesite_brick_slab.name=Andesite Bricks Slab
 
 entity.villager.guard=Guard
 entity.villager.soldier=Soldier
