@@ -166,15 +166,44 @@ public class SmallOakTree extends AbstractSmallTree<BlockLivingLog, BlockLivingL
 				leaves.add(pos);
 			return;
 		}
+		int adjacent_leaves = 0;
 		for(EnumFacing facing : EnumFacing.values())
 		{
 			BlockPos pos2 = pos.offset(facing);
 			int y1 = pos2.getY();
-			if((pos2.getX() == x && pos2.getZ() == z && y1 >= y && y1 - y < height) || already_discovered.computeIfAbsent(pos2, (pos21) -> access.getBlockState(pos21).getBlock()) == leaf)
+			if((pos2.getX() == x && pos2.getZ() == z && y1 >= y && y1 - y < height))
+			{
+                leaves.add(pos);
+                return;
+			}
+			else if(already_discovered.computeIfAbsent(pos2, (pos21) -> access.getBlockState(pos21).getBlock()) == leaf && ++adjacent_leaves == 2)
 			{
 				leaves.add(pos);
 				return;
 			}
+		}
+		if(adjacent_leaves == 1)
+		{
+		    int radius = 0;
+		    if(pos.getX() == x)
+		        radius = Math.abs(pos.getZ() - z) - 1;
+		    else if(pos.getZ() == z)
+                radius = Math.abs(pos.getX() - x) - 1;
+		    if(radius > 0)
+		    {
+		        BlockPos pos3 = new BlockPos(x, y, z);
+		        for(int z_index = 2; z < 4; z++)
+		        {
+		            BlockPos pos4 = pos3.offset(EnumFacing.values()[z_index], radius);
+		            for(int x_index = 4; x < 6; x++)
+		            {
+		                pos4 = pos4.offset(EnumFacing.values()[x_index], radius);
+		                if(already_discovered.computeIfAbsent(pos4, (pos41) -> access.getBlockState(pos41).getBlock()) != leaf)
+		                    return;
+		            }
+		        }
+		        leaves.add(pos);
+		    }
 		}
 	}
 }
