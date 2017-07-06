@@ -7,8 +7,11 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
 
 public class BlockStoneSlab extends BlockSlab
 {
@@ -19,6 +22,20 @@ public class BlockStoneSlab extends BlockSlab
     {
         super(Material.ROCK);
         this.double_slab = double_slab;
+    }
+    
+    @Override
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items)
+    {
+        Item item = Item.getItemFromBlock(this);
+        for(EnumSlabType type : EnumSlabType.values())
+            items.add(new ItemStack(item, 1, type.ordinal()));
+    }
+    
+    @Override
+    public int damageDropped(IBlockState state)
+    {
+        return state.getValue(VARIANT).ordinal();
     }
 
     @Override
@@ -48,7 +65,8 @@ public class BlockStoneSlab extends BlockSlab
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(HALF, BlockSlab.EnumBlockHalf.values()[Math.min(1, meta / EnumSlabType.values().length)]).withProperty(VARIANT, EnumSlabType.values()[meta & (EnumSlabType.values().length - 1)]);
+        int half = Math.min(1, meta / EnumSlabType.values().length);
+        return this.getDefaultState().withProperty(HALF, BlockSlab.EnumBlockHalf.values()[half]).withProperty(VARIANT, EnumSlabType.values()[meta - (EnumSlabType.values().length * half)]);
     }
     
     @Override

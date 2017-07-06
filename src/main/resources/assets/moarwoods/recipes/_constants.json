@@ -1,0 +1,32 @@
+[
+	{
+		"name": "all_granite_bricks",
+		"ingredient":
+		[
+			{ "item": "moarwoods:granite_bricks", "data": 0 },
+			{ "item": "moarwoods:granite_bricks", "data": 1 },
+			{ "item": "moarwoods:granite_bricks", "data": 2 },
+			{ "item": "moarwoods:granite_bricks", "data": 3 }
+		]
+	},
+	{
+		"name": "all_diorite_bricks",
+		"ingredient":
+		[
+			{ "item": "moarwoods:diorite_bricks", "data": 0 },
+			{ "item": "moarwoods:diorite_bricks", "data": 1 },
+			{ "item": "moarwoods:diorite_bricks", "data": 2 },
+			{ "item": "moarwoods:diorite_bricks", "data": 3 }
+		]
+	},
+	{
+		"name": "all_andesite_bricks",
+		"ingredient":
+		[
+			{ "item": "moarwoods:andesite_bricks", "data": 0 },
+			{ "item": "moarwoods:andesite_bricks", "data": 1 },
+			{ "item": "moarwoods:andesite_bricks", "data": 2 },
+			{ "item": "moarwoods:andesite_bricks", "data": 3 }
+		]
+	}
+]

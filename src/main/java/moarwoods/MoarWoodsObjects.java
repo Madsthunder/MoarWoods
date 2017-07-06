@@ -135,7 +135,7 @@ public class MoarWoodsObjects
             registry.register(new BlockStoneBricks(MapColor.DIRT).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:granite_bricks").setRegistryName("moarwoods:granite_bricks"));
             registry.register(new BlockStoneBricks(MapColor.QUARTZ).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:diorite_bricks").setRegistryName("moarwoods:diorite_bricks"));
 		    registry.register(new BlockStoneBricks(MapColor.STONE).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setUnlocalizedName("moarwoods:andesite_bricks").setRegistryName("moarwoods:andesite_bricks"));
-            registry.register(new BlockStoneSlab(false).setRegistryName("moarwoods:stone_slab"));
+            registry.register(new BlockStoneSlab(false).setCreativeTab(CreativeTabs.BUILDING_BLOCKS).setRegistryName("moarwoods:stone_slab"));
             registry.register(new BlockStoneSlab(true).setRegistryName("moarwoods:double_stone_slab"));
 		}
 	}

@@ -1,30 +1,20 @@
 package moarwoods;
 
-import java.util.Collection;
-
 import moarwoods.blocks.BlockLivingLog;
-import moarwoods.blocks.BlockQuarterLog;
 import moarwoods.client.renderers.entity.RenderVillagerWrapper;
 import moarwoods.packets.PacketUpdateBiomes;
 import moarwoods.villagers.VillagerFarmer;
-import net.minecraft.block.BlockLog;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerVillagerArmor;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.world.ColorizerFoliage;
 import net.minecraft.world.biome.BiomeColorHelper;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
@@ -52,6 +42,9 @@ public class MoarWoodsProxies
 	{
         VillagerFarmer.addItems(VillagerRegistry.FARMER.getCareer(0), Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.WHEAT, Items.BEETROOT, Items.POTATO, Items.POISONOUS_POTATO, Items.CARROT);
         VillagerFarmer.addItems(VillagerRegistry.FARMER.getCareer(1), Items.FISH);
+        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MoarWoodsObjects.GRANITE_BRICKS, 1, 0), new ItemStack(MoarWoodsObjects.GRANITE_BRICKS, 1, 1), 0.1F);
+        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MoarWoodsObjects.DIORITE_BRICKS, 1, 0), new ItemStack(MoarWoodsObjects.DIORITE_BRICKS, 1, 1), 0.1F);
+        FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MoarWoodsObjects.ANDESITE_BRICKS, 1, 0), new ItemStack(MoarWoodsObjects.ANDESITE_BRICKS, 1, 1), 0.1F);
 	}
 	
 	public void post()

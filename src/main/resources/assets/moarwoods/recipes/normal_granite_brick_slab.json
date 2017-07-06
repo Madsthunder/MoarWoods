@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"key": { "#":  { "item": "#all_granite_bricks" } },
+	"result": { "item": "moarwoods:stone_slab", "data": 0, "count": 6 },
+	"pattern":
+	[
+		"###"
+	]
+}
